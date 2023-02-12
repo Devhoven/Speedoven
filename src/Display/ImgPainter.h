@@ -12,7 +12,7 @@
 #include "Fonts/Fonts.h"
 
 // Draws on a black and white image
-class ImgPaint
+class ImgPainter
 {
 private:
     unsigned char *Image;
@@ -21,7 +21,7 @@ private:
     int Rotate;
 
 public:
-    ImgPaint(int width, int height);
+    ImgPainter(int width, int height);
     
     int GetWidth();
     void SetWidth(int width);

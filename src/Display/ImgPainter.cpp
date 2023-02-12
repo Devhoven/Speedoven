@@ -1,7 +1,7 @@
-#include "ImgPaint.h"
 #include <Arduino.h>
+#include "ImgPainter.h"
 
-ImgPaint::ImgPaint(int width, int height)
+ImgPainter::ImgPainter(int width, int height)
 {
     SetWidth(width);
     SetHeight(height);
@@ -13,7 +13,7 @@ ImgPaint::ImgPaint(int width, int height)
 /**
  *  @brief: clear the image
  */
-void ImgPaint::Clear(int colored)
+void ImgPainter::Clear(int colored)
 {
     memset(Image, colored ? 0xFF : 0, Width * Height / 8);
 }
@@ -22,7 +22,7 @@ void ImgPaint::Clear(int colored)
  *  @brief: this draws a pixel by absolute coordinates.
  *          this function won't be affected by the rotate parameter.
  */
-void ImgPaint::DrawAbsolutePixel(int x, int y, int colored)
+void ImgPainter::DrawAbsolutePixel(int x, int y, int colored)
 {
     if (x < 0 || x >= Width || y < 0 || y >= Height)
         return;
@@ -39,38 +39,38 @@ void ImgPaint::DrawAbsolutePixel(int x, int y, int colored)
 /**
  *  @brief: Getters and Setters
  */
-unsigned char *ImgPaint::GetImage()
+unsigned char *ImgPainter::GetImage()
 {
     return Image;
 }
 
-int ImgPaint::GetWidth()
+int ImgPainter::GetWidth()
 {
     return Width;
 }
 
-void ImgPaint::SetWidth(int width)
+void ImgPainter::SetWidth(int width)
 {
     /* 1 byte = 8 pixels, so the width should be the multiple of 8 */
     Width = width % 8 ? width + 8 - (width % 8) : width;
 }
 
-int ImgPaint::GetHeight()
+int ImgPainter::GetHeight()
 {
     return Height;
 }
 
-void ImgPaint::SetHeight(int height)
+void ImgPainter::SetHeight(int height)
 {
     Height = height;
 }
 
-int ImgPaint::GetRotate()
+int ImgPainter::GetRotate()
 {
     return Rotate;
 }
 
-void ImgPaint::SetRotate(int rotate)
+void ImgPainter::SetRotate(int rotate)
 {
     Rotate = rotate;
 }
@@ -78,7 +78,7 @@ void ImgPaint::SetRotate(int rotate)
 /**
  *  @brief: this draws a pixel by the coordinates
  */
-void ImgPaint::DrawPixel(int x, int y, int colored)
+void ImgPainter::DrawPixel(int x, int y, int colored)
 {
     if (x < 0 || y < 0)
         return;
@@ -116,7 +116,7 @@ void ImgPaint::DrawPixel(int x, int y, int colored)
 /**
  *  @brief: this draws a charactor on the frame buffer but not refresh
  */
-void ImgPaint::DrawCharAt(int x, int y, char asciiChar, sFONT *font, int colored)
+void ImgPainter::DrawCharAt(int x, int y, char asciiChar, sFONT *font, int colored)
 {
     int i, j;
     unsigned int char_offset = (asciiChar - ' ') * font->Height * (font->Width / 8 + (font->Width % 8 ? 1 : 0));
@@ -140,7 +140,7 @@ void ImgPaint::DrawCharAt(int x, int y, char asciiChar, sFONT *font, int colored
 /**
  *  @brief: this displays a string on the frame buffer but not refresh
  */
-void ImgPaint::DrawStringAt(int x, int y, const char *text, sFONT *font, int colored)
+void ImgPainter::DrawStringAt(int x, int y, const char *text, sFONT *font, int colored)
 {
     const char *textPointer = text;
     unsigned int counter = 0;
@@ -162,7 +162,7 @@ void ImgPaint::DrawStringAt(int x, int y, const char *text, sFONT *font, int col
 /**
  *  @brief: this draws a line on the frame buffer
  */
-void ImgPaint::DrawLine(int x0, int y0, int x1, int y1, int colored)
+void ImgPainter::DrawLine(int x0, int y0, int x1, int y1, int colored)
 {
     /* Bresenham algorithm */
     int dx = x1 - x0 >= 0 ? x1 - x0 : x0 - x1;
@@ -190,7 +190,7 @@ void ImgPaint::DrawLine(int x0, int y0, int x1, int y1, int colored)
 /**
  *  @brief: this draws a horizontal line on the frame buffer
  */
-void ImgPaint::DrawHorizontalLine(int x, int y, int line_width, int colored)
+void ImgPainter::DrawHorizontalLine(int x, int y, int line_width, int colored)
 {
     for (int i = x; i < x + line_width; i++)
         DrawPixel(i, y, colored);
@@ -199,7 +199,7 @@ void ImgPaint::DrawHorizontalLine(int x, int y, int line_width, int colored)
 /**
  *  @brief: this draws a vertical line on the frame buffer
  */
-void ImgPaint::DrawVerticalLine(int x, int y, int line_height, int colored)
+void ImgPainter::DrawVerticalLine(int x, int y, int line_height, int colored)
 {
     for (int i = y; i < y + line_height; i++)
         DrawPixel(x, i, colored);
@@ -208,7 +208,7 @@ void ImgPaint::DrawVerticalLine(int x, int y, int line_height, int colored)
 /**
  *  @brief: this draws a rectangle
  */
-void ImgPaint::DrawRectangle(int x0, int y0, int x1, int y1, int colored)
+void ImgPainter::DrawRectangle(int x0, int y0, int x1, int y1, int colored)
 {
     int min_x, min_y, max_x, max_y;
     min_x = x1 > x0 ? x0 : x1;
@@ -225,7 +225,7 @@ void ImgPaint::DrawRectangle(int x0, int y0, int x1, int y1, int colored)
 /**
  *  @brief: this draws a filled rectangle
  */
-void ImgPaint::DrawFilledRectangle(int x0, int y0, int x1, int y1, int colored)
+void ImgPainter::DrawFilledRectangle(int x0, int y0, int x1, int y1, int colored)
 {
     int min_x, min_y, max_x, max_y;
     min_x = x1 > x0 ? x0 : x1;
@@ -240,7 +240,7 @@ void ImgPaint::DrawFilledRectangle(int x0, int y0, int x1, int y1, int colored)
 /**
  *  @brief: this draws a circle
  */
-void ImgPaint::DrawCircle(int x, int y, int radius, int colored)
+void ImgPainter::DrawCircle(int x, int y, int radius, int colored)
 {
     /* Bresenham algorithm */
     int x_pos = -radius;
@@ -273,7 +273,7 @@ void ImgPaint::DrawCircle(int x, int y, int radius, int colored)
 /**
  *  @brief: this draws a filled circle
  */
-void ImgPaint::DrawFilledCircle(int x, int y, int radius, int colored)
+void ImgPainter::DrawFilledCircle(int x, int y, int radius, int colored)
 {
     /* Bresenham algorithm */
     int x_pos = -radius;

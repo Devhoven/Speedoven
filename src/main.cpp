@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include <SPI.h>
 #include "Display/EPaperDisplay.h"
-#include "Display/ImgPaint.h"
+#include "Display/ImgPainter.h"
 
 #define COLORED 0
 #define UNCOLORED 1
@@ -18,7 +18,7 @@
 #define CLK_PIN  33
 #define DIN_PIN  32
 
-ImgPaint paint(EPD_WIDTH, EPD_HEIGHT); 
+ImgPainter paint(EPD_WIDTH, EPD_HEIGHT); 
 EPaperDisplay display(EPD_WIDTH, EPD_HEIGHT, 
                       BUSY_PIN, RST_PIN, DC_PIN, CS_PIN, CLK_PIN, DIN_PIN);
 
@@ -28,23 +28,16 @@ unsigned long currentMS;
 
 void setup()
 {
-    // put your setup code here, to run once:
     Serial.begin(115200);
-    if (display.Init() != 0)
-    {
-        Serial.print("e-Paper init failed");
-        return;
-    }
+    display.Init();
 
-    display.ClearFrameMemory(0xFF);
-    display.DisplayFrame();
+    Serial.println("Started");
 
     startMS = millis();
 }
 
 void loop()
 {
-    // put your main code here, to run repeatedly:
     currentMS = (millis() - startMS) / 1000;
     char time_string[] = {'0', '0', ':', '0', '0', '\0'};
     time_string[0] = currentMS / 60 / 10 + '0';
@@ -58,6 +51,6 @@ void loop()
 
     paint.Clear(UNCOLORED);
     paint.DrawStringAt(0, 0, time_string, &Font24, COLORED);
-    display.SetFrameMemory_Partial(paint.GetImage(), 0, 0, paint.GetWidth(), paint.GetHeight());
-    display.DisplayFrame_Partial();
+    display.SetFrameMemoryPartial(paint.GetImage(), 0, 0, paint.GetWidth(), paint.GetHeight());
+    display.DisplayFramePartial();
 }
