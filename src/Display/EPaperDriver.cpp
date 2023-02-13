@@ -124,7 +124,7 @@ void EPaperDriver::SetMemoryArea(int xStart, int yStart, int x_end, int y_end)
     SendData((y_end >> 8) & 0xFF);
 }
 
-// private function to specify the start point for data R/W
+// Private function to specify the start point for data R/W
 void EPaperDriver::SetMemoryPointer(int x, int y)
 {
     SendCommand(0x4E);
@@ -235,7 +235,7 @@ void EPaperDriver::SetFrameMemoryPartial(const unsigned char *imgBuf,
                                            int x, int y, 
                                            int imgWidth, int imgHeight)
 {
-    if (x + imgWidth > Width)
+   if (x + imgWidth > Width)
         imgWidth = Width - x;
     if (y + imgHeight > Height)
         imgHeight = Height - y;

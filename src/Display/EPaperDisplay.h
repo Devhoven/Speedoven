@@ -17,20 +17,20 @@
 class EPaperDisplay : public EPaperDriver
 {
 private:
-    unsigned char* Image;
     unsigned int Width;
     unsigned int Height;
     uint8_t Rotation;
     
 public:
+    unsigned char* Image;
+
     EPaperDisplay(unsigned int width, unsigned int height, uint8_t rotation,
                   EPaperPinConfig pinConfig);
     
     int GetWidth();
     int GetHeight();
     int GetRotate();
-    void SetRotate(int rotation);
-    unsigned char* GetImage();
+    void SetRotate(uint8_t rotation);
 
     void Clear(int color);
     void DrawAbsolutePixel(int x, int y, int color);

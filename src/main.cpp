@@ -45,7 +45,9 @@ void loop()
     time_string[4] = CurrentMS % 60 % 10 + '0';
 
     Display.Clear(WHITE);
-    // Display.DrawString(0, 0, time_string, &Font24, BLACK);
-    Display.DrawString(0, 0, "Ilstnkt", &Font24, WHITE);
+    Display.DrawString(0, 0, time_string, &Font24, BLACK);
+    Display.DrawString(0, 24, "Rebecc", &Font24, BLACK);
+    Display.DrawString(0, 48, "der Kek", &Font24, BLACK);
+    Display.SetFrameMemoryPartial(Display.Image, 0, 0, 128, 72);
     Display.DisplayFramePartial();
 }

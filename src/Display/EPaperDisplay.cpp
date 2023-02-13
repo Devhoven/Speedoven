@@ -38,11 +38,6 @@ void EPaperDisplay::DrawAbsolutePixel(int x, int y, int color)
 }
 
 // Getters and Setters
-unsigned char *EPaperDisplay::GetImage()
-{
-    return Image;
-}
-
 int EPaperDisplay::GetWidth()
 {
     return Width;
@@ -58,7 +53,7 @@ int EPaperDisplay::GetRotate()
     return Rotation;
 }
 
-void EPaperDisplay::SetRotate(int rotation)
+void EPaperDisplay::SetRotate(uint8_t rotation)
 {
     Rotation = rotation;
 }
@@ -140,7 +135,7 @@ void EPaperDisplay::DrawString(int x, int y, const char* text, sFONT* font, int 
         counter++;
     }
 
-    SetFrameMemoryPartial(GetImage(), x, y, font->Width * counter, font->Height);
+    // SetFrameMemoryPartial(Image, x, y, 128, font->Height);
 }
 
 // Draws a line 
