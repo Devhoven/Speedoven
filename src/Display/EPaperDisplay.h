@@ -1,51 +1,47 @@
 #pragma once
 
-#define SPI_CLOCK_SPEED 2000000
+// Display orientation
+#define ROTATE_0   0
+#define ROTATE_90  1
+#define ROTATE_180 2
+#define ROTATE_270 3
 
-class EPaperDisplay
+// Color inverse. 1 or 0 = set or reset a bit if set a color pixel
+#define IF_INVERT_COLOR 1
+
+#include <Arduino.h>
+#include "EPaperDriver.h"
+#include "Fonts/Fonts.h"
+
+// Draws on a black and white image
+class EPaperDisplay : public EPaperDriver
 {
 private:
-    unsigned int RstPin;
-    unsigned int DCPin;
-    unsigned int CSPin;
-    unsigned int BusyPin;
-    unsigned int ClkPin;
-    unsigned int DinPin;
-
-    void InitSpi();
-    void SpiTransfer(unsigned char data);
-    void SpiTransfer(void* data, size_t length);
-
-    void SendCommand(unsigned char command);
-    void SendData(unsigned char data);
-    void SendData(void* data, size_t length);
-
-    void SetLut(unsigned char *lut);
-    void SetLutByHost(unsigned char *lut);
-    void SetMemoryArea(int xStart, int yStart, int xEnd, int yEnd);
-    void SetMemoryPointer(int x, int y);
-
-    void WaitUntilIdle();
-
-public:
+    unsigned char* Image;
     unsigned int Width;
     unsigned int Height;
+    uint8_t Rotation;
+    
+public:
+    EPaperDisplay(unsigned int width, unsigned int height, uint8_t rotation,
+                  EPaperPinConfig pinConfig);
+    
+    int GetWidth();
+    int GetHeight();
+    int GetRotate();
+    void SetRotate(int rotation);
+    unsigned char* GetImage();
 
-    EPaperDisplay(unsigned int width, unsigned int height, 
-                  unsigned int busyPin, unsigned int rstPin, unsigned int dcPin,
-                  unsigned int csPin, unsigned int clkPin, unsigned int dinPin);
-    void Init();
-    void Reset();
-    void Sleep();
-
-    void ClearFrameMemory(unsigned char color);
-    void SetFrameMemory(const unsigned char* imgBuf, 
-                        int x, int y, 
-                        int imgWidth, int imgHeight);
-    void SetFrameMemoryPartial(const unsigned char* imgBuf, 
-                                int x, int y, 
-                                int imgWidth, int imgHeight);
-                                
-    void DisplayFrame();
-    void DisplayFramePartial();
+    void Clear(int color);
+    void DrawAbsolutePixel(int x, int y, int color);
+    void DrawPixel(int x, int y, int color);
+    void DrawChar(int x, int y, char ascii_char, sFONT* font, int color);
+    void DrawString(int x, int y, const char* text, sFONT* font, int color);
+    void DrawLine(int x0, int y0, int x1, int y1, int color);
+    void DrawHorizontalLine(int x, int y, int width, int color);
+    void DrawVerticalLine(int x, int y, int height, int color);
+    void DrawRectangle(int x0, int y0, int x1, int y1, int color);
+    void DrawFilledRectangle(int x0, int y0, int x1, int y1, int color);
+    void DrawCircle(int x, int y, int radius, int color);
+    void DrawFilledCircle(int x, int y, int radius, int color);
 };

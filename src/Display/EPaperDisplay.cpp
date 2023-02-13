@@ -1,469 +1,273 @@
 #include <Arduino.h>
-#include <stdlib.h>
-#include <SPI.h>
 #include "EPaperDisplay.h"
+#include "EPaperDriver.h"
 
-unsigned char PARTIAL_REFRESH_WAVEFORM[159] =
-{     
-        0x0,
-    0x40,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x80,
-    0x80,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x40,
-    0x40,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x80,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0A,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x2,
-    0x1,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x1,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x0,
-    0x22,
-    0x22,
-    0x22,
-    0x22,
-    0x22,
-    0x22,
-    0x0,
-    0x0,
-    0x0,
-    0x22,
-    0x17,
-    0x41,
-    0xB0,
-    0x32,
-    0x36,
-};
-
-unsigned char INIT_WAVEFORM[159] =
+unsigned int CalcWidth(unsigned int width)
 {
-    0x80, 0x66, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x40, 0x0, 0x0, 0x0,
-    0x10, 0x66, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x20, 0x0, 0x0, 0x0,
-    0x80, 0x66, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x40, 0x0, 0x0, 0x0,
-    0x10, 0x66, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x20, 0x0, 0x0, 0x0,
-    0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
-    0x14, 0x8, 0x0, 0x0, 0x0, 0x0, 0x1,
-    0xA, 0xA, 0x0, 0xA, 0xA, 0x0, 0x1,
-    0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
-    0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
-    0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
-    0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
-    0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
-    0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
-    0x14, 0x8, 0x0, 0x1, 0x0, 0x0, 0x1,
-    0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x1,
-    0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
-    0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
-    0x44, 0x44, 0x44, 0x44, 0x44, 0x44, 0x0, 0x0, 0x0,
-    0x22, 0x17, 0x41, 0x0, 0x32, 0x36   
-};
-
-
-EPaperDisplay::EPaperDisplay(unsigned int width, unsigned int height, 
-                             unsigned int busyPin, unsigned int rstPin, unsigned int dcPin,
-                             unsigned int csPin, unsigned int clkPin, unsigned int dinPin) 
-                             : Width{width}, Height{height}, BusyPin{busyPin}, RstPin{rstPin}, DCPin{dcPin}, CSPin{csPin}, ClkPin{clkPin}, DinPin{dinPin}
-{ }
-
-void EPaperDisplay::InitSpi()
-{
-    pinMode(CSPin, OUTPUT);
-    pinMode(RstPin, OUTPUT);
-    pinMode(DCPin, OUTPUT);
-    pinMode(BusyPin, INPUT);
-    // -1 = no MISO - PIN
-    SPI.begin(ClkPin, -1, DinPin);
-    SPI.beginTransaction(SPISettings(SPI_CLOCK_SPEED, MSBFIRST, SPI_MODE0));
+    // 1 byte = 8 pixels, so the width should be the multiple of 8 
+    return width % 8 ? width + 8 - (width % 8) : width;
 }
 
-// Sends a byte of data via SPI
-void EPaperDisplay::SpiTransfer(unsigned char data)
+EPaperDisplay::EPaperDisplay(unsigned int width, unsigned int height, uint8_t rotation,
+                             EPaperPinConfig pinConfig) 
+                             : EPaperDriver(width, height, pinConfig),
+                             Width{CalcWidth(width)},
+                             Height{height}, Rotation{rotation}
 {
-    digitalWrite(CSPin, LOW);
-    SPI.transfer(data);
-    digitalWrite(CSPin, HIGH);
+    Image = new unsigned char[Width * Height / 8];
 }
 
-// Sends an array of data via SPI
-void EPaperDisplay::SpiTransfer(void* data, size_t length)
+void EPaperDisplay::Clear(int color)
 {
-    digitalWrite(CSPin, LOW);
-    SPI.transfer(data, length);
-    digitalWrite(CSPin, HIGH);
+    memset(Image, color ? 0xFF : 0, Width * Height / 8);
 }
 
-// Sends a command 
-void EPaperDisplay::SendCommand(unsigned char command)
+// Draws a pixel by absolute coordinates, no matter the rotation
+void EPaperDisplay::DrawAbsolutePixel(int x, int y, int color)
 {
-    digitalWrite(DCPin, LOW);
-    SpiTransfer(command);
+    if (x < 0 || x >= Width || y < 0 || y >= Height)
+        return;
+
+    if (IF_INVERT_COLOR)
+        color = color ? 1 : 0;
+
+    if (color)
+        Image[(x + y * Width) / 8] |= 0x80 >> (x % 8);
+    else
+        Image[(x + y * Width) / 8] &= ~(0x80 >> (x % 8));
 }
 
-// Sends one byte of data
-void EPaperDisplay::SendData(unsigned char data)
+// Getters and Setters
+unsigned char *EPaperDisplay::GetImage()
 {
-    digitalWrite(DCPin, HIGH);
-    SpiTransfer(data);
+    return Image;
 }
 
-// Sends an array of data to the display
-void EPaperDisplay::SendData(void* data, size_t length)
+int EPaperDisplay::GetWidth()
 {
-    digitalWrite(DCPin, HIGH);
-    SpiTransfer(data, length);
+    return Width;
 }
 
-// No idea what SetLut and SetLutByHost do exactly, but they are needed for initialization and partial refresh
-void EPaperDisplay::SetLut(unsigned char *lut)
+int EPaperDisplay::GetHeight()
 {
-    // SendCommand(0x32);
-    // SendData(lut, 153);
-    // WaitUntilIdle();
-    unsigned char count;
-    SendCommand(0x32);
-    for (count = 0; count < 153; count++)
-        SendData(lut[count]);
-    WaitUntilIdle();
-}
-void EPaperDisplay::SetLutByHost(unsigned char *lut)
-{
-    SetLut((unsigned char *)lut);
-    SendCommand(0x3f);
-    SendData(*(lut + 153));
-    SendCommand(0x03); // gate voltage
-    SendData(*(lut + 154));
-    SendCommand(0x04);      // source voltage
-    SendData(*(lut + 155)); // VSH
-    SendData(*(lut + 156)); // VSH2
-    SendData(*(lut + 157)); // VSL
-    SendCommand(0x2c);      // VCOM
-    SendData(*(lut + 158));
+    return Height;
 }
 
-// private function to specify the memory area for data R/W
-void EPaperDisplay::SetMemoryArea(int xStart, int yStart, int x_end, int y_end)
+int EPaperDisplay::GetRotate()
 {
-    SendCommand(0x44);
-    /* x point must be the multiple of 8 or the last 3 bits will be ignored */
-    SendData((xStart >> 3) & 0xFF);
-    SendData((x_end >> 3) & 0xFF);
-    SendCommand(0x45);
-    SendData(yStart & 0xFF);
-    SendData((yStart >> 8) & 0xFF);
-    SendData(y_end & 0xFF);
-    SendData((y_end >> 8) & 0xFF);
+    return Rotation;
 }
 
-// private function to specify the start point for data R/W
-void EPaperDisplay::SetMemoryPointer(int x, int y)
+void EPaperDisplay::SetRotate(int rotation)
 {
-    SendCommand(0x4E);
-    /* x point must be the multiple of 8 or the last 3 bits will be ignored */
-    SendData((x >> 3) & 0xFF);
-    SendCommand(0x4F);
-    SendData(y & 0xFF);
-    SendData((y >> 8) & 0xFF);
-    WaitUntilIdle();
+    Rotation = rotation;
 }
 
-// Wait until the busy_pin goes LOW
-void EPaperDisplay::WaitUntilIdle()
+// Draws a pixel at the given coordinates, affected by the rotation
+void EPaperDisplay::DrawPixel(int x, int y, int color)
 {
-    while (digitalRead(BusyPin) != LOW)
-        delay(1);
-    delay(5);
+    if (x < 0 || y < 0)
+        return;
+
+    if (Rotation == ROTATE_0)
+    {
+        if (x >= Width || y >= Height)
+            return;
+
+        DrawAbsolutePixel(x, y, color);
+    }
+    else if (Rotation == ROTATE_90)
+    {
+        if (x >= Height || y >= Width)
+            return;
+
+        DrawAbsolutePixel(Width - y, x, color);
+    }
+    else if (Rotation == ROTATE_180)
+    {
+        if (x >= Width || y >= Height)
+            return;
+
+        DrawAbsolutePixel(Width - x, Height - y, color);
+    }
+    else if (Rotation == ROTATE_270)
+    {
+        if (x >= Height || y >= Width)
+            return;
+
+        DrawAbsolutePixel(y, Height - x, color);
+    }
 }
 
-// Initializes the display
-void EPaperDisplay::Init()
+// Draws a character
+void EPaperDisplay::DrawChar(int x, int y, char asciiChar, sFONT* font, int color)
 {
-    /* Hardware init start */
-    InitSpi();
+    int i, j;
+    unsigned int char_offset = (asciiChar - ' ') * font->Height * (font->Width / 8 + (font->Width % 8 ? 1 : 0));
+    const unsigned char *ptr = &font->table[char_offset];
 
-    Reset();
+    for (j = 0; j < font->Height; j++)
+    {
+        for (i = 0; i < font->Width; i++)
+        {
+            if (*ptr & (0x80 >> (i % 8)))
+                DrawPixel(x + i, y + j, color);
 
-    WaitUntilIdle();
-    SendCommand(0x12); // SWRESET
-    WaitUntilIdle();
-
-    SendCommand(0x01); // Driver output control
-    SendData(0x27);
-    SendData(0x01);
-    SendData(0x00);
-
-    SendCommand(0x11); // data entry mode
-    SendData(0x03);
-
-    SetMemoryArea(0, 0, Width - 1, Height - 1);
-
-    SendCommand(0x21); //  Display update control
-    SendData(0x00);
-    SendData(0x80);
-
-    SetMemoryPointer(0, 0);
-    WaitUntilIdle();
-
-    SetLutByHost(INIT_WAVEFORM);
-    /* Hardware init end */
-
-    // Clears both memroy buffers of the display to white, the background's noisy otherwise
-    ClearFrameMemory(0xFF);
-    DisplayFrame();
+            if (i % 8 == 7)
+                ptr++;
+        }
+        if (font->Width % 8 != 0)
+            ptr++;
+    }
 }
 
-// Module reset. 
-// Can be used to wake the module out of deep sleep
-void EPaperDisplay::Reset()
+// Draws a string
+void EPaperDisplay::DrawString(int x, int y, const char* text, sFONT* font, int color)
 {
-    digitalWrite(RstPin, HIGH);
-    delay(20);
-    digitalWrite(RstPin, LOW); // module reset
-    delay(5);
-    digitalWrite(RstPin, HIGH);
-    delay(20);
+    const char *textPointer = text;
+    unsigned int counter = 0;
+    int refcolumn = x;
+
+    /* Send the string character by character on EPD */
+    while (*textPointer != 0)
+    {
+        /* Display one character on EPD */
+        DrawChar(refcolumn, y, *textPointer, font, color);
+        /* Decrement the column position by 16 */
+        refcolumn += font->Width;
+        /* Point on the next character */
+        textPointer++;
+        counter++;
+    }
+
+    SetFrameMemoryPartial(GetImage(), x, y, font->Width * counter, font->Height);
 }
 
-// Clears both memory buffers with the specified color.
-void EPaperDisplay::ClearFrameMemory(unsigned char color)
+// Draws a line 
+void EPaperDisplay::DrawLine(int x0, int y0, int x1, int y1, int color)
 {
-    SetMemoryArea(0, 0, this->Width - 1, this->Height - 1);
-    SetMemoryPointer(0, 0);
-    SendCommand(0x24);
-    /* send the color data */
-    for (int i = 0; i < this->Width / 8 * this->Height; i++)
-        SendData(color);
+    /* Bresenham algorithm */
+    int dx = x1 - x0 >= 0 ? x1 - x0 : x0 - x1;
+    int sx = x0 < x1 ? 1 : -1;
+    int dy = y1 - y0 <= 0 ? y1 - y0 : y0 - y1;
+    int sy = y0 < y1 ? 1 : -1;
+    int err = dx + dy;
 
-    SendCommand(0x26);
-    /* send the color data */
-    for (int i = 0; i < this->Width / 8 * this->Height; i++)
-        SendData(color);
+    while ((x0 != x1) && (y0 != y1))
+    {
+        DrawPixel(x0, y0, color);
+        if (2 * err >= dy)
+        {
+            err += dy;
+            x0 += sx;
+        }
+        if (2 * err <= dx)
+        {
+            err += dx;
+            y0 += sy;
+        }
+    }
 }
 
-// Writes an image into the frame memory at a specified position
-void EPaperDisplay::SetFrameMemory(const unsigned char *imgBuf, 
-                                   int x, int y, 
-                                   int imgWidth, int imgHeight)
+// Draws a horizontal line
+void EPaperDisplay::DrawHorizontalLine(int x, int y, int line_width, int color)
 {
-    if (x + imgWidth > Width)
-        imgWidth = Width - x;
-    if (y + imgHeight > Height)
-        imgHeight = Height - y;
-
-    // x point must be the multiple of 8 or the last 3 bits will be ignored 
-    x &= 0xF8;
-    imgWidth &= 0xF8;
-
-    SetMemoryArea(x, y, x + imgWidth - 1, y + imgHeight - 1);
-    SetMemoryPointer(x, y);
-    SendCommand(0x24);
-
-    SendData((void*)imgBuf, imgWidth * imgHeight / 8);
+    for (int i = x; i < x + line_width; i++)
+        DrawPixel(i, y, color);
 }
 
-// Writes an image into the frame memory at a specified position, for partial refresh
-void EPaperDisplay::SetFrameMemoryPartial(const unsigned char *imgBuf, 
-                                           int x, int y, 
-                                           int imgWidth, int imgHeight)
+// Draws a vertical line
+void EPaperDisplay::DrawVerticalLine(int x, int y, int line_height, int color)
 {
-    if (x + imgWidth > Width)
-        imgWidth = Width - x;
-    if (y + imgHeight > Height)
-        imgHeight = Height - y;
-
-    /* x point must be the multiple of 8 or the last 3 bits will be ignored */
-    x &= 0xF8;
-    imgWidth &= 0xF8;
-
-    digitalWrite(RstPin, LOW);
-    delay(2);
-    digitalWrite(RstPin, HIGH);
-    delay(2);
-
-    SetLut(PARTIAL_REFRESH_WAVEFORM);
-    SendCommand(0x37);
-    SendData(0x00);
-    SendData(0x00);
-    SendData(0x00);
-    SendData(0x00);
-    SendData(0x00);
-    SendData(0x40);
-    SendData(0x00);
-    SendData(0x00);
-    SendData(0x00);
-    SendData(0x00);
-
-    SendCommand(0x3C); // BorderWavefrom
-    SendData(0x80);
-
-    SendCommand(0x22);
-    SendData(0xC0);
-    SendCommand(0x20);
-    WaitUntilIdle();                    
-    
-    SetMemoryArea(x, y, x + imgWidth - 1, y + imgHeight - 1);
-    SetMemoryPointer(x, y);
-    SendCommand(0x24);
-
-    SendData((void*)imgBuf, imgWidth * imgHeight / 8);
+    for (int i = y; i < y + line_height; i++)
+        DrawPixel(x, i, color);
 }
 
-// The display has got two internal memory buffers
-// One contains the currently displayed content of the display, the other has the data for the next frame and get's written on with SetFrameMemory
-// This method swaps the two buffers, so that the buffer with the new content gets shown
-void EPaperDisplay::DisplayFrame()
+// Draws a rectangle
+void EPaperDisplay::DrawRectangle(int x0, int y0, int x1, int y1, int color)
 {
-    SendCommand(0x22);
-    SendData(0xc7);
-    SendCommand(0x20);
-    WaitUntilIdle();
+    int min_x, min_y, max_x, max_y;
+    min_x = x1 > x0 ? x0 : x1;
+    max_x = x1 > x0 ? x1 : x0;
+    min_y = y1 > y0 ? y0 : y1;
+    max_y = y1 > y0 ? y1 : y0;
+
+    DrawHorizontalLine(min_x, min_y, max_x - min_x + 1, color);
+    DrawHorizontalLine(min_x, max_y, max_x - min_x + 1, color);
+    DrawVerticalLine  (min_x, min_y, max_y - min_y + 1, color);
+    DrawVerticalLine  (max_x, min_y, max_y - min_y + 1, color);
 }
 
-// Does the same as DisplayFrame, but for a partial refresh
-void EPaperDisplay::DisplayFramePartial()
+// Draws a filled rectangle
+void EPaperDisplay::DrawFilledRectangle(int x0, int y0, int x1, int y1, int color)
 {
-    SendCommand(0x22);
-    SendData(0x0F);
-    SendCommand(0x20);
-    WaitUntilIdle();
+    int min_x, min_y, max_x, max_y;
+    min_x = x1 > x0 ? x0 : x1;
+    max_x = x1 > x0 ? x1 : x0;
+    min_y = y1 > y0 ? y0 : y1;
+    max_y = y1 > y0 ? y1 : y0;
+
+    for (int i = min_x; i <= max_x; i++)
+        DrawVerticalLine(i, min_y, max_y - min_y + 1, color);
 }
 
-// After this command is transmitted, the chip would enter the deep-sleep mode to save power.
-// The deep sleep mode would return to standby by hardware reset. 
-// Epd::Init() can be used to awaken the display
-void EPaperDisplay::Sleep()
+// Draws a circle
+void EPaperDisplay::DrawCircle(int x, int y, int radius, int color)
 {
-    SendCommand(0x10);
-    SendData(0x01);
-    // WaitUntilIdle();
+    /* Bresenham algorithm */
+    int x_pos = -radius;
+    int y_pos = 0;
+    int err = 2 - 2 * radius;
+    int e2;
+
+    do
+    {
+        DrawPixel(x - x_pos, y + y_pos, color);
+        DrawPixel(x + x_pos, y + y_pos, color);
+        DrawPixel(x + x_pos, y - y_pos, color);
+        DrawPixel(x - x_pos, y - y_pos, color);
+        e2 = err;
+        if (e2 <= y_pos)
+        {
+            err += ++y_pos * 2 + 1;
+            if (-x_pos == y_pos && e2 <= x_pos)
+            {
+                e2 = 0;
+            }
+        }
+        if (e2 > x_pos)
+        {
+            err += ++x_pos * 2 + 1;
+        }
+    } while (x_pos <= 0);
+}
+
+// Draws a filled circle
+void EPaperDisplay::DrawFilledCircle(int x, int y, int radius, int color)
+{
+    /* Bresenham algorithm */
+    int x_pos = -radius;
+    int y_pos = 0;
+    int err = 2 - 2 * radius;
+    int e2;
+
+    do
+    {
+        DrawPixel(x - x_pos, y + y_pos, color);
+        DrawPixel(x + x_pos, y + y_pos, color);
+        DrawPixel(x + x_pos, y - y_pos, color);
+        DrawPixel(x - x_pos, y - y_pos, color);
+        DrawHorizontalLine(x + x_pos, y + y_pos, 2 * (-x_pos) + 1, color);
+        DrawHorizontalLine(x + x_pos, y - y_pos, 2 * (-x_pos) + 1, color);
+        e2 = err;
+        if (e2 <= y_pos)
+        {
+            err += ++y_pos * 2 + 1;
+            if (-x_pos == y_pos && e2 <= x_pos)
+                e2 = 0;
+        }
+        if (e2 > x_pos)
+            err += ++x_pos * 2 + 1;
+
+    } while (x_pos <= 0);
 }
