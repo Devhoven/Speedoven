@@ -6,8 +6,8 @@
 #define ROTATE_180 2
 #define ROTATE_270 3
 
-// Color inverse. 1 or 0 = set or reset a bit if set a color pixel
-#define IF_INVERT_COLOR 1
+#define BLACK 0
+#define WHITE 1
 
 #include <Arduino.h>
 #include "EPaperDriver.h"
@@ -22,6 +22,10 @@ private:
     uint8_t Rotation;
 
     void SetSize(unsigned int imgWidth, unsigned int imgHeight);
+    
+    void DrawAbsolutePixel(int x, int y, int color);
+    void DrawPixel(int x, int y, int color);
+    void DrawChar(int x, int y, char ascii_char, sFONT* font, int color);
 
 public:
     unsigned char* Image;
@@ -33,9 +37,6 @@ public:
     void SetRotate(uint8_t rotation);
 
     void Clear(int color);
-    void DrawAbsolutePixel(int x, int y, int color);
-    void DrawPixel(int x, int y, int color);
-    void DrawChar(int x, int y, char ascii_char, sFONT* font, int color);
     void DrawString(int x, int y, const char* text, sFONT* font, int color);
     void DrawLine(int x0, int y0, int x1, int y1, int color);
     void DrawHorizontalLine(int x, int y, int width, int color);

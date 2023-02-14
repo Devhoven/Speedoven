@@ -14,19 +14,16 @@ EPaperDisplay::EPaperDisplay(unsigned int width, unsigned int height, uint8_t ro
 
 void EPaperDisplay::Clear(int color)
 {
-    memset(Image, color ? 0xFF : 0, Width * Height / 8);
+    memset(Image, color ? 0xFF : 0, ImgWidth * ImgHeight / 8);
 }
 
 // Draws a pixel by absolute coordinates, no matter the rotation
 void EPaperDisplay::DrawAbsolutePixel(int x, int y, int color)
 {
-    if (IF_INVERT_COLOR)
-        color = color ? 1 : 0;
-
     if (color)
-        Image[(x + y * ImgWidth) / 8] |= 0x80 >> (x % 8);
+        Image[(x + y * Width) / 8] |= 0x80 >> (x % 8);
     else
-        Image[(x + y * ImgWidth) / 8] &= ~(0x80 >> (x % 8));
+        Image[(x + y * Width) / 8] &= ~(0x80 >> (x % 8));
 }
 
 void EPaperDisplay::SetSize(unsigned int imgWidth, unsigned int imgHeight){
@@ -106,15 +103,13 @@ void EPaperDisplay::DrawChar(int x, int y, char asciiChar, sFONT* font, int colo
 // Draws a string
 void EPaperDisplay::DrawString(int x, int y, const char* text, sFONT* font, int color)
 {
-    Clear(1);
-
     size_t textLength = strlen(text);
 
     SetSize(font->Width * textLength, font->Height);
 
     // Send the string character by character 
     for (int i = 0; i < textLength; i++)
-        DrawChar(i * font->Width, 0, *(text + i), font, color);
+        DrawChar(i * font->Width + x, y, *(text + i), font, color);
 
     SetFrameMemoryPartial(Image, x, y, ImgWidth, ImgHeight);
 }

@@ -3,9 +3,6 @@
 #include "Display/EPaperDriver.h"
 #include "Display/EPaperDisplay.h"
 
-#define BLACK 0
-#define WHITE 1
-
 // Display resolution
 #define EPD_WIDTH  128
 #define EPD_HEIGHT 296
@@ -47,6 +44,7 @@ void loop()
     Display.Clear(WHITE);
     Display.DrawString(0, 0, "Ilja", &Font24, BLACK);
     Display.DrawString(0, 24, timeStr, &Font24, BLACK);
-    Display.DrawString(0, 48, "mieft", &Font24, BLACK);
+    Display.DrawString(0, 48, "pieft", &Font24, BLACK);
+
     Display.DisplayFramePartial();
 }
