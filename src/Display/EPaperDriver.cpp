@@ -193,6 +193,26 @@ void EPaperDriver::Reset()
     delay(20);
 }
 
+// After this command is transmitted, the chip would enter the deep-sleep mode to save power.
+// The deep sleep mode would return to standby by hardware reset. 
+// Epd::Init() can be used to awaken the display
+void EPaperDriver::Sleep()
+{
+    SendCommand(0x10);
+    SendData(0x01);
+    // WaitUntilIdle();
+}
+
+unsigned int EPaperDriver::GetWidth()
+{
+    return Width;
+}
+
+unsigned int EPaperDriver::GetHeight()
+{
+    return Height;
+}
+
 // Clears both memory buffers with the specified color.
 void EPaperDriver::ClearFrameMemory(unsigned char color)
 {
@@ -250,17 +270,11 @@ void EPaperDriver::SetFrameMemoryPartial(const unsigned char *imgBuf,
     delay(2);
 
     SetLut(PARTIAL_REFRESH_WAVEFORM);
-    SendCommand(0x37);
-    SendData(0x00);
-    SendData(0x00);
-    SendData(0x00);
-    SendData(0x00);
-    SendData(0x00);
-    SendData(0x40);
-    SendData(0x00);
-    SendData(0x00);
-    SendData(0x00);
-    SendData(0x00);
+    SendCommand(0x37); 
+    // No Idea why, but I can't put this data in an array and send it over 🤔
+    // If you put it in an array and send it, the screen doesn't get cleared properly
+    SendData(0x00); SendData(0x00); SendData(0x00); SendData(0x00); SendData(0x00); 
+    SendData(0x40); SendData(0x00); SendData(0x00); SendData(0x00); SendData(0x00);
 
     SendCommand(0x3C); // BorderWavefrom
     SendData(0x80);
@@ -295,14 +309,4 @@ void EPaperDriver::DisplayFramePartial()
     SendData(0x0F);
     SendCommand(0x20);
     WaitUntilIdle();
-}
-
-// After this command is transmitted, the chip would enter the deep-sleep mode to save power.
-// The deep sleep mode would return to standby by hardware reset. 
-// Epd::Init() can be used to awaken the display
-void EPaperDriver::Sleep()
-{
-    SendCommand(0x10);
-    SendData(0x01);
-    // WaitUntilIdle();
 }

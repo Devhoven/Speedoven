@@ -2,19 +2,14 @@
 #include "EPaperDisplay.h"
 #include "EPaperDriver.h"
 
-unsigned int CalcWidth(unsigned int width)
-{
-    // 1 byte = 8 pixels, so the width should be the multiple of 8 
-    return width % 8 ? width + 8 - (width % 8) : width;
-}
-
 EPaperDisplay::EPaperDisplay(unsigned int width, unsigned int height, uint8_t rotation,
                              EPaperPinConfig pinConfig) 
                              : EPaperDriver(width, height, pinConfig),
-                             Width{CalcWidth(width)},
-                             Height{height}, Rotation{rotation}
+                             ImgWidth{0}, ImgHeight{0}, Rotation{rotation}
 {
-    Image = new unsigned char[Width * Height / 8];
+    // An array which could contain the whole image
+    SetSize(Width, Height);
+    Image = new unsigned char[ImgWidth * ImgHeight / 8];
 }
 
 void EPaperDisplay::Clear(int color)
@@ -25,27 +20,20 @@ void EPaperDisplay::Clear(int color)
 // Draws a pixel by absolute coordinates, no matter the rotation
 void EPaperDisplay::DrawAbsolutePixel(int x, int y, int color)
 {
-    if (x < 0 || x >= Width || y < 0 || y >= Height)
-        return;
-
     if (IF_INVERT_COLOR)
         color = color ? 1 : 0;
 
     if (color)
-        Image[(x + y * Width) / 8] |= 0x80 >> (x % 8);
+        Image[(x + y * ImgWidth) / 8] |= 0x80 >> (x % 8);
     else
-        Image[(x + y * Width) / 8] &= ~(0x80 >> (x % 8));
+        Image[(x + y * ImgWidth) / 8] &= ~(0x80 >> (x % 8));
 }
 
-// Getters and Setters
-int EPaperDisplay::GetWidth()
-{
-    return Width;
-}
+void EPaperDisplay::SetSize(unsigned int imgWidth, unsigned int imgHeight){
 
-int EPaperDisplay::GetHeight()
-{
-    return Height;
+    // 1 byte = 8 pixels, so the width should be the multiple of 8 
+    ImgWidth = imgWidth % 8 ? imgWidth + 8 - (imgWidth % 8) : imgWidth;
+    ImgHeight = imgHeight;
 }
 
 int EPaperDisplay::GetRotate()
@@ -97,18 +85,17 @@ void EPaperDisplay::DrawPixel(int x, int y, int color)
 // Draws a character
 void EPaperDisplay::DrawChar(int x, int y, char asciiChar, sFONT* font, int color)
 {
-    int i, j;
     unsigned int char_offset = (asciiChar - ' ') * font->Height * (font->Width / 8 + (font->Width % 8 ? 1 : 0));
-    const unsigned char *ptr = &font->table[char_offset];
+    const unsigned char *ptr = &font->table[char_offset];   
 
-    for (j = 0; j < font->Height; j++)
+    for (int i = 0; i < font->Height; i++)
     {
-        for (i = 0; i < font->Width; i++)
+        for (int j = 0; j < font->Width; j++)
         {
-            if (*ptr & (0x80 >> (i % 8)))
-                DrawPixel(x + i, y + j, color);
-
-            if (i % 8 == 7)
+            if (*ptr & (0x80 >> (j % 8)))
+                DrawPixel(x + j, y + i, color);
+            
+            if (j % 8 == 7)
                 ptr++;
         }
         if (font->Width % 8 != 0)
@@ -119,23 +106,17 @@ void EPaperDisplay::DrawChar(int x, int y, char asciiChar, sFONT* font, int colo
 // Draws a string
 void EPaperDisplay::DrawString(int x, int y, const char* text, sFONT* font, int color)
 {
-    const char *textPointer = text;
-    unsigned int counter = 0;
-    int refcolumn = x;
+    Clear(1);
 
-    /* Send the string character by character on EPD */
-    while (*textPointer != 0)
-    {
-        /* Display one character on EPD */
-        DrawChar(refcolumn, y, *textPointer, font, color);
-        /* Decrement the column position by 16 */
-        refcolumn += font->Width;
-        /* Point on the next character */
-        textPointer++;
-        counter++;
-    }
+    size_t textLength = strlen(text);
 
-    // SetFrameMemoryPartial(Image, x, y, 128, font->Height);
+    SetSize(font->Width * textLength, font->Height);
+
+    // Send the string character by character 
+    for (int i = 0; i < textLength; i++)
+        DrawChar(i * font->Width, 0, *(text + i), font, color);
+
+    SetFrameMemoryPartial(Image, x, y, ImgWidth, ImgHeight);
 }
 
 // Draws a line 

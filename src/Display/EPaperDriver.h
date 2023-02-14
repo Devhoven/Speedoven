@@ -15,9 +15,11 @@ struct EPaperPinConfig
 
 class EPaperDriver
 {
-private:
+protected:
     unsigned int Width;
     unsigned int Height;
+
+private:
     EPaperPinConfig PinConfig;
 
     void InitSpi();
@@ -37,9 +39,13 @@ private:
 
 public:
     EPaperDriver(unsigned int width, unsigned int height, EPaperPinConfig pinConfig);
+    
     void Init();
     void Reset();
     void Sleep();
+
+    unsigned int GetHeight();
+    unsigned int GetWidth();
 
     void ClearFrameMemory(unsigned char color);
     void SetFrameMemory(const unsigned char* imgBuf, 

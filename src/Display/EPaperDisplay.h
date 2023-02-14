@@ -17,18 +17,18 @@
 class EPaperDisplay : public EPaperDriver
 {
 private:
-    unsigned int Width;
-    unsigned int Height;
+    unsigned int ImgWidth;
+    unsigned int ImgHeight;
     uint8_t Rotation;
-    
+
+    void SetSize(unsigned int imgWidth, unsigned int imgHeight);
+
 public:
     unsigned char* Image;
 
     EPaperDisplay(unsigned int width, unsigned int height, uint8_t rotation,
                   EPaperPinConfig pinConfig);
     
-    int GetWidth();
-    int GetHeight();
     int GetRotate();
     void SetRotate(uint8_t rotation);
 
