@@ -2,7 +2,7 @@
 #include "EPaperDisplay.h"
 #include "EPaperDriver.h"
 
-EPaperDisplay::EPaperDisplay(unsigned int width, unsigned int height, EPaperPinConfig pinConfig) 
+EPaperDisplay::EPaperDisplay(uint16_t width, uint16_t height, EPaperPinConfig pinConfig) 
                              : EPaperDriver(width, height, pinConfig),
                              ImgWidth{0}, ImgHeight{0}
 {
@@ -12,20 +12,20 @@ EPaperDisplay::EPaperDisplay(unsigned int width, unsigned int height, EPaperPinC
 }
 
 // Clears the whole display
-void EPaperDisplay::Clear(int color)
+void EPaperDisplay::Clear(uint16_t color)
 {
     memset(Image, color ? 0xFF : 0, Width * Height / 8);
 }
 
 // Clears a region of memory on the display in the set color
 // x and width have to be a multiple of 8 
-void EPaperDisplay::ClearRegion(int x, int y, unsigned int width, unsigned int height, int color)
+void EPaperDisplay::ClearRegion(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t color)
 {
     memset((Image + x / 8 + y), color ? 0xFF : 0, width * height / 8);
 }
 
 // Draws a pixel by absolute coordinates
-void EPaperDisplay::DrawPixel(int x, int y, int color)
+void EPaperDisplay::DrawPixel(uint16_t x, uint16_t y, uint16_t color)
 {
     if (color)
         Image[(x + y * Width) / 8] |= 0x80 >> (x % 8);
@@ -33,7 +33,7 @@ void EPaperDisplay::DrawPixel(int x, int y, int color)
         Image[(x + y * Width) / 8] &= ~(0x80 >> (x % 8));
 }
 
-void EPaperDisplay::SetSize(unsigned int imgWidth, unsigned int imgHeight){
+void EPaperDisplay::SetSize(uint16_t imgWidth, uint16_t imgHeight){
 
     // 1 byte = 8 pixels, so the width should be the multiple of 8 
     ImgWidth = imgWidth % 8 ? imgWidth + 8 - (imgWidth % 8) : imgWidth;
@@ -41,14 +41,14 @@ void EPaperDisplay::SetSize(unsigned int imgWidth, unsigned int imgHeight){
 }
 
 // Draws a character
-void EPaperDisplay::DrawChar(int x, int y, char asciiChar, sFONT* font, int color)
+void EPaperDisplay::DrawChar(uint16_t x, uint16_t y, char asciiChar, sFONT* font, uint16_t color)
 {
-    unsigned int char_offset = (asciiChar - ' ') * font->Height * (font->Width / 8 + (font->Width % 8 ? 1 : 0));
+    uint16_t char_offset = (asciiChar - ' ') * font->Height * (font->Width / 8 + (font->Width % 8 ? 1 : 0));
     const unsigned char *ptr = &font->table[char_offset];   
 
-    for (int i = 0; i < font->Height; i++)
+    for (uint16_t i = 0; i < font->Height; i++)
     {
-        for (int j = 0; j < font->Width; j++)
+        for (uint16_t j = 0; j < font->Width; j++)
         {
             if (*ptr & (0x80 >> (j % 8)))
                 DrawPixel(x + j, y + i, color);
@@ -64,28 +64,28 @@ void EPaperDisplay::DrawChar(int x, int y, char asciiChar, sFONT* font, int colo
 }
 
 // Draws a string
-void EPaperDisplay::DrawString(int x, int y, const char* text, sFONT* font, int color)
+void EPaperDisplay::DrawString(uint16_t x, uint16_t y, const char* text, sFONT* font, uint16_t color)
 {
     size_t textLength = strlen(text);
 
     SetSize(font->Width * textLength, font->Height);
 
     // Send the string character by character 
-    for (int i = 0; i < textLength; i++)
+    for (uint16_t i = 0; i < textLength; i++)
         DrawChar(i * font->Width + x, y, *(text + i), font, color);
 
     SetFrameMemoryPartial(Image, x, y, ImgWidth, ImgHeight);
 }
 
 // Draws a line 
-void EPaperDisplay::DrawLine(int x0, int y0, int x1, int y1, int color)
+void EPaperDisplay::DrawLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color)
 {
     /* Bresenham algorithm */
-    int dx = x1 - x0 >= 0 ? x1 - x0 : x0 - x1;
-    int sx = x0 < x1 ? 1 : -1;
-    int dy = y1 - y0 <= 0 ? y1 - y0 : y0 - y1;
-    int sy = y0 < y1 ? 1 : -1;
-    int err = dx + dy;
+    uint16_t dx = x1 - x0 >= 0 ? x1 - x0 : x0 - x1;
+    uint16_t sx = x0 < x1 ? 1 : -1;
+    uint16_t dy = y1 - y0 <= 0 ? y1 - y0 : y0 - y1;
+    uint16_t sy = y0 < y1 ? 1 : -1;
+    uint16_t err = dx + dy;
 
     while ((x0 != x1) && (y0 != y1))
     {
@@ -102,35 +102,35 @@ void EPaperDisplay::DrawLine(int x0, int y0, int x1, int y1, int color)
         }
     }
 
-    int minX = min(x0, x1);
-    int maxX = max(x0, x1);
-    int minY = min(y0, y1);
-    int maxY = max(y0, y1);
+    uint16_t minX = min(x0, x1);
+    uint16_t maxX = max(x0, x1);
+    uint16_t minY = min(y0, y1);
+    uint16_t maxY = max(y0, y1);
     SetFrameMemoryPartial(Image, minX, minY, maxX - minX, maxY - minY);
 }
 
 // Draws a horizontal line
-void EPaperDisplay::DrawHorizontalLine(int x, int y, int lineWidth, int color)
+void EPaperDisplay::DrawHorizontalLine(uint16_t x, uint16_t y, uint16_t lineWidth, uint16_t color)
 {
-    for (int i = x; i < x + lineWidth; i++)
+    for (uint16_t i = x; i < x + lineWidth; i++)
         DrawPixel(i, y, color);
 
     SetFrameMemoryPartial(Image, x, y, lineWidth, 1);
 }
 
 // Draws a vertical line
-void EPaperDisplay::DrawVerticalLine(int x, int y, int lineHeight, int color)
+void EPaperDisplay::DrawVerticalLine(uint16_t x, uint16_t y, uint16_t lineHeight, uint16_t color)
 {
-    for (int i = y; i < y + lineHeight; i++)
+    for (uint16_t i = y; i < y + lineHeight; i++)
         DrawPixel(x, i, color);
     
     SetFrameMemoryPartial(Image, x, y, 8, lineHeight);
 }
 
 // Draws a rectangle
-void EPaperDisplay::DrawRectangle(int x0, int y0, int x1, int y1, int color)
+void EPaperDisplay::DrawRectangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color)
 {
-    int minX, minY, maxX, maxY;
+    uint16_t minX, minY, maxX, maxY;
     minX = min(x0, x1);
     maxX = max(x0, x1);
     minY = min(y0, y1);
@@ -143,26 +143,26 @@ void EPaperDisplay::DrawRectangle(int x0, int y0, int x1, int y1, int color)
 }
 
 // Draws a filled rectangle
-void EPaperDisplay::DrawFilledRectangle(int x0, int y0, int x1, int y1, int color)
+void EPaperDisplay::DrawFilledRectangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color)
 {
-    int min_x, min_y, max_x, max_y;
+    uint16_t min_x, min_y, max_x, max_y;
     min_x = x1 > x0 ? x0 : x1;
     max_x = x1 > x0 ? x1 : x0;
     min_y = y1 > y0 ? y0 : y1;
     max_y = y1 > y0 ? y1 : y0;
 
-    for (int i = min_x; i <= max_x; i++)
+    for (uint16_t i = min_x; i <= max_x; i++)
         DrawVerticalLine(i, min_y, max_y - min_y + 1, color);
 }
 
 // Draws a circle
-void EPaperDisplay::DrawCircle(int x, int y, int radius, int color)
+void EPaperDisplay::DrawCircle(uint16_t x, uint16_t y, uint16_t radius, uint16_t color)
 {
     /* Bresenham algorithm */
-    int x_pos = -radius;
-    int y_pos = 0;
-    int err = 2 - 2 * radius;
-    int e2;
+    uint16_t x_pos = -radius;
+    uint16_t y_pos = 0;
+    uint16_t err = 2 - 2 * radius;
+    uint16_t e2;
 
     do
     {
@@ -187,13 +187,13 @@ void EPaperDisplay::DrawCircle(int x, int y, int radius, int color)
 }
 
 // Draws a filled circle
-void EPaperDisplay::DrawFilledCircle(int x, int y, int radius, int color)
+void EPaperDisplay::DrawFilledCircle(uint16_t x, uint16_t y, uint16_t radius, uint16_t color)
 {
     /* Bresenham algorithm */
-    int x_pos = -radius;
-    int y_pos = 0;
-    int err = 2 - 2 * radius;
-    int e2;
+    uint16_t x_pos = -radius;
+    uint16_t y_pos = 0;
+    uint16_t err = 2 - 2 * radius;
+    uint16_t e2;
 
     do
     {

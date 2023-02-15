@@ -5,19 +5,19 @@
 
 struct EPaperPinConfig
 {
-    unsigned int BusyPin;
-    unsigned int RstPin;
-    unsigned int DCPin;
-    unsigned int CSPin;
-    unsigned int ClkPin;
-    unsigned int DinPin;
+    uint16_t BusyPin;
+    uint16_t RstPin;
+    uint16_t DCPin;
+    uint16_t CSPin;
+    uint16_t ClkPin;
+    uint16_t DinPin;
 };
 
 class EPaperDriver
 {
 protected:
-    unsigned int Width;
-    unsigned int Height;
+    uint16_t Width;
+    uint16_t Height;
 
 private:
     EPaperPinConfig PinConfig;
@@ -32,26 +32,26 @@ private:
 
     void SetLut(unsigned char *lut);
     void SetLutByHost(unsigned char *lut);
-    void SetMemoryArea(int xStart, int yStart, int xEnd, int yEnd);
-    void SetMemoryPointer(int x, int y);
+    void SetMemoryArea(uint16_t xStart, uint16_t yStart, uint16_t xEnd, uint16_t yEnd);
+    void SetMemoryPointer(uint16_t x, uint16_t y);
 
     void WaitUntilIdle();
 
 public:
-    EPaperDriver(unsigned int width, unsigned int height, EPaperPinConfig pinConfig);
+    EPaperDriver(uint16_t width, uint16_t height, EPaperPinConfig pinConfig);
     
     void Init();
     void Reset();
     void Sleep();
 
-    unsigned int GetHeight();
-    unsigned int GetWidth();
+    uint16_t GetHeight();
+    uint16_t GetWidth();
 
     void ClearFrameMemory(unsigned char color);
     void SetFrameMemory(const unsigned char* imgBuf, 
-                        int x, int y, int imgWidth, int imgHeight);
+                        uint16_t x, uint16_t y, uint16_t imgWidth, uint16_t imgHeight);
     void SetFrameMemoryPartial(const unsigned char* imgBuf, 
-                               int x, int y,  int imgWidth, int imgHeight);
+                               uint16_t x, uint16_t y,  uint16_t imgWidth, uint16_t imgHeight);
                                 
     void DisplayFrame();
     void DisplayFramePartial();

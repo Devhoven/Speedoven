@@ -31,7 +31,7 @@ unsigned char INIT_WAVEFORM[159] =
     0x22, 0x17, 0x41, 0x0, 0x32, 0x36   
 };
 
-EPaperDriver::EPaperDriver(unsigned int width, unsigned int height, EPaperPinConfig pinConfig) 
+EPaperDriver::EPaperDriver(uint16_t width, uint16_t height, EPaperPinConfig pinConfig) 
                            : Width{width}, Height{height}, PinConfig{pinConfig}
 { }
 
@@ -111,7 +111,7 @@ void EPaperDriver::SetLutByHost(unsigned char *lut)
 }
 
 // private function to specify the memory area for data R/W
-void EPaperDriver::SetMemoryArea(int xStart, int yStart, int x_end, int y_end)
+void EPaperDriver::SetMemoryArea(uint16_t xStart, uint16_t yStart, uint16_t x_end, uint16_t y_end)
 {
     SendCommand(0x44);
     /* x point must be the multiple of 8 or the last 3 bits will be ignored */
@@ -125,7 +125,7 @@ void EPaperDriver::SetMemoryArea(int xStart, int yStart, int x_end, int y_end)
 }
 
 // Private function to specify the start point for data R/W
-void EPaperDriver::SetMemoryPointer(int x, int y)
+void EPaperDriver::SetMemoryPointer(uint16_t x, uint16_t y)
 {
     SendCommand(0x4E);
     /* x point must be the multiple of 8 or the last 3 bits will be ignored */
@@ -203,12 +203,12 @@ void EPaperDriver::Sleep()
     // WaitUntilIdle();
 }
 
-unsigned int EPaperDriver::GetWidth()
+uint16_t EPaperDriver::GetWidth()
 {
     return Width;
 }
 
-unsigned int EPaperDriver::GetHeight()
+uint16_t EPaperDriver::GetHeight()
 {
     return Height;
 }
@@ -220,19 +220,19 @@ void EPaperDriver::ClearFrameMemory(unsigned char color)
     SetMemoryPointer(0, 0);
     SendCommand(0x24);
     /* send the color data */
-    for (int i = 0; i < this->Width / 8 * this->Height; i++)
+    for (uint16_t i = 0; i < this->Width / 8 * this->Height; i++)
         SendData(color);
 
     SendCommand(0x26);
     /* send the color data */
-    for (int i = 0; i < this->Width / 8 * this->Height; i++)
+    for (uint16_t i = 0; i < this->Width / 8 * this->Height; i++)
         SendData(color);
 }
 
 // Writes an image into the frame memory at a specified position
 void EPaperDriver::SetFrameMemory(const unsigned char *imgBuf, 
-                                   int x, int y, 
-                                   int imgWidth, int imgHeight)
+                                   uint16_t x, uint16_t y, 
+                                   uint16_t imgWidth, uint16_t imgHeight)
 {
     if (x + imgWidth > Width)
         imgWidth = Width - x;
@@ -252,8 +252,8 @@ void EPaperDriver::SetFrameMemory(const unsigned char *imgBuf,
 
 // Writes an image into the frame memory at a specified position, for partial refresh
 void EPaperDriver::SetFrameMemoryPartial(const unsigned char *imgBuf, 
-                                           int x, int y, 
-                                           int imgWidth, int imgHeight)
+                                           uint16_t x, uint16_t y, 
+                                           uint16_t imgWidth, uint16_t imgHeight)
 {
    if (x + imgWidth > Width)
         imgWidth = Width - x;
@@ -288,7 +288,7 @@ void EPaperDriver::SetFrameMemoryPartial(const unsigned char *imgBuf,
     SetMemoryPointer(x, y);
     SendCommand(0x24);
 
-    for (int j = 0; j < imgHeight; j++)
+    for (uint16_t j = 0; j < imgHeight; j++)
         SendData((void*)(imgBuf + x + (j + y) * Width / 8), imgWidth / 8);
 }
 

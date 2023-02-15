@@ -4,6 +4,7 @@
 #define WHITE 1
 
 #include <Arduino.h>
+#include <stdlib.h>
 #include "EPaperDriver.h"
 #include "Fonts/Fonts.h"
 
@@ -11,27 +12,27 @@
 class EPaperDisplay : public EPaperDriver
 {
 private:
-    unsigned int ImgWidth;
-    unsigned int ImgHeight;
+    uint16_t ImgWidth;
+    uint16_t ImgHeight;
 
-    void SetSize(unsigned int imgWidth, unsigned int imgHeight);
+    void SetSize(uint16_t imgWidth, uint16_t imgHeight);
     
-    void ClearRegion(int x, int y, unsigned int width, unsigned int height, int color);
-    void DrawPixel(int x, int y, int color);
-    void DrawChar(int x, int y, char asciiChar, sFONT* font, int color);
+    void ClearRegion(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t color);
+    void DrawPixel(uint16_t x, uint16_t y, uint16_t color);
+    void DrawChar(uint16_t x, uint16_t y, char asciiChar, sFONT* font, uint16_t color);
 
 public:
     unsigned char* Image;
 
-    EPaperDisplay(unsigned int width, unsigned int height, EPaperPinConfig pinConfig);
+    EPaperDisplay(uint16_t width, uint16_t height, EPaperPinConfig pinConfig);
 
-    void Clear(int color);
-    void DrawString(int x, int y, const char* text, sFONT* font, int color);
-    void DrawLine(int x0, int y0, int x1, int y1, int color);
-    void DrawHorizontalLine(int x, int y, int lineWidth, int color);
-    void DrawVerticalLine(int x, int y, int lineHeight, int color);
-    void DrawRectangle(int x0, int y0, int x1, int y1, int color);
-    void DrawFilledRectangle(int x0, int y0, int x1, int y1, int color);
-    void DrawCircle(int x, int y, int radius, int color);
-    void DrawFilledCircle(int x, int y, int radius, int color);
+    void Clear(uint16_t color);
+    void DrawString(uint16_t x, uint16_t y, const char* text, sFONT* font, uint16_t color);
+    void DrawLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color);
+    void DrawHorizontalLine(uint16_t x, uint16_t y, uint16_t lineWidth, uint16_t color);
+    void DrawVerticalLine(uint16_t x, uint16_t y, uint16_t lineHeight, uint16_t color);
+    void DrawRectangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color);
+    void DrawFilledRectangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color);
+    void DrawCircle(uint16_t x, uint16_t y, uint16_t radius, uint16_t color);
+    void DrawFilledCircle(uint16_t x, uint16_t y, uint16_t radius, uint16_t color);
 };
