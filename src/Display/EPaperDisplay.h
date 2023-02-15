@@ -17,22 +17,21 @@ private:
 
     void SetSize(uint16_t imgWidth, uint16_t imgHeight);
     
-    void ClearRegion(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t color);
-    void DrawPixel(uint16_t x, uint16_t y, uint16_t color);
-    void DrawChar(uint16_t x, uint16_t y, char asciiChar, sFONT* font, uint16_t color);
+    void DrawPixel(uint16_t x, uint16_t y, uint8_t color);
+    void DrawChar(uint16_t x, uint16_t y, char asciiChar, sFONT* font, uint8_t color);
 
 public:
     unsigned char* Image;
 
     EPaperDisplay(uint16_t width, uint16_t height, EPaperPinConfig pinConfig);
 
-    void Clear(uint16_t color);
-    void DrawString(uint16_t x, uint16_t y, const char* text, sFONT* font, uint16_t color);
-    void DrawLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color);
-    void DrawHorizontalLine(uint16_t x, uint16_t y, uint16_t lineWidth, uint16_t color);
-    void DrawVerticalLine(uint16_t x, uint16_t y, uint16_t lineHeight, uint16_t color);
-    void DrawRectangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color);
-    void DrawFilledRectangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color);
-    void DrawCircle(uint16_t x, uint16_t y, uint16_t radius, uint16_t color);
-    void DrawFilledCircle(uint16_t x, uint16_t y, uint16_t radius, uint16_t color);
+    void Clear(uint8_t color);
+    void DrawString(uint16_t x, uint16_t y, const char* text, sFONT* font, uint8_t color);
+    void DrawLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t color);
+    void DrawHorizontalLine(uint16_t x, uint16_t y, uint16_t lineWidth, uint8_t color);
+    void DrawVerticalLine(uint16_t x, uint16_t y, uint16_t lineHeight, uint8_t color);
+    void DrawRectangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t color);
+    void DrawFilledRectangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t color);
+    void DrawCircle(uint16_t x, uint16_t y, uint16_t radius, uint8_t color);
+    void DrawFilledCircle(uint16_t x, uint16_t y, uint16_t radius, uint8_t color);
 };

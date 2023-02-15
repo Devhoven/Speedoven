@@ -12,20 +12,13 @@ EPaperDisplay::EPaperDisplay(uint16_t width, uint16_t height, EPaperPinConfig pi
 }
 
 // Clears the whole display
-void EPaperDisplay::Clear(uint16_t color)
+void EPaperDisplay::Clear(uint8_t color)
 {
     memset(Image, color ? 0xFF : 0, Width * Height / 8);
 }
 
-// Clears a region of memory on the display in the set color
-// x and width have to be a multiple of 8 
-void EPaperDisplay::ClearRegion(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t color)
-{
-    memset((Image + x / 8 + y), color ? 0xFF : 0, width * height / 8);
-}
-
 // Draws a pixel by absolute coordinates
-void EPaperDisplay::DrawPixel(uint16_t x, uint16_t y, uint16_t color)
+void EPaperDisplay::DrawPixel(uint16_t x, uint16_t y, uint8_t color)
 {
     if (color)
         Image[(x + y * Width) / 8] |= 0x80 >> (x % 8);
@@ -41,7 +34,7 @@ void EPaperDisplay::SetSize(uint16_t imgWidth, uint16_t imgHeight){
 }
 
 // Draws a character
-void EPaperDisplay::DrawChar(uint16_t x, uint16_t y, char asciiChar, sFONT* font, uint16_t color)
+void EPaperDisplay::DrawChar(uint16_t x, uint16_t y, char asciiChar, sFONT* font, uint8_t color)
 {
     uint16_t char_offset = (asciiChar - ' ') * font->Height * (font->Width / 8 + (font->Width % 8 ? 1 : 0));
     const unsigned char *ptr = &font->table[char_offset];   
@@ -64,7 +57,7 @@ void EPaperDisplay::DrawChar(uint16_t x, uint16_t y, char asciiChar, sFONT* font
 }
 
 // Draws a string
-void EPaperDisplay::DrawString(uint16_t x, uint16_t y, const char* text, sFONT* font, uint16_t color)
+void EPaperDisplay::DrawString(uint16_t x, uint16_t y, const char* text, sFONT* font, uint8_t color)
 {
     size_t textLength = strlen(text);
 
@@ -78,7 +71,7 @@ void EPaperDisplay::DrawString(uint16_t x, uint16_t y, const char* text, sFONT* 
 }
 
 // Draws a line 
-void EPaperDisplay::DrawLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color)
+void EPaperDisplay::DrawLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t color)
 {
     /* Bresenham algorithm */
     uint16_t dx = x1 - x0 >= 0 ? x1 - x0 : x0 - x1;
@@ -110,7 +103,7 @@ void EPaperDisplay::DrawLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1,
 }
 
 // Draws a horizontal line
-void EPaperDisplay::DrawHorizontalLine(uint16_t x, uint16_t y, uint16_t lineWidth, uint16_t color)
+void EPaperDisplay::DrawHorizontalLine(uint16_t x, uint16_t y, uint16_t lineWidth, uint8_t color)
 {
     for (uint16_t i = x; i < x + lineWidth; i++)
         DrawPixel(i, y, color);
@@ -119,7 +112,7 @@ void EPaperDisplay::DrawHorizontalLine(uint16_t x, uint16_t y, uint16_t lineWidt
 }
 
 // Draws a vertical line
-void EPaperDisplay::DrawVerticalLine(uint16_t x, uint16_t y, uint16_t lineHeight, uint16_t color)
+void EPaperDisplay::DrawVerticalLine(uint16_t x, uint16_t y, uint16_t lineHeight, uint8_t color)
 {
     for (uint16_t i = y; i < y + lineHeight; i++)
         DrawPixel(x, i, color);
@@ -128,7 +121,7 @@ void EPaperDisplay::DrawVerticalLine(uint16_t x, uint16_t y, uint16_t lineHeight
 }
 
 // Draws a rectangle
-void EPaperDisplay::DrawRectangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color)
+void EPaperDisplay::DrawRectangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t color)
 {
     uint16_t minX, minY, maxX, maxY;
     minX = min(x0, x1);
@@ -143,7 +136,7 @@ void EPaperDisplay::DrawRectangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_
 }
 
 // Draws a filled rectangle
-void EPaperDisplay::DrawFilledRectangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color)
+void EPaperDisplay::DrawFilledRectangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t color)
 {
     uint16_t min_x, min_y, max_x, max_y;
     min_x = x1 > x0 ? x0 : x1;
@@ -156,7 +149,7 @@ void EPaperDisplay::DrawFilledRectangle(uint16_t x0, uint16_t y0, uint16_t x1, u
 }
 
 // Draws a circle
-void EPaperDisplay::DrawCircle(uint16_t x, uint16_t y, uint16_t radius, uint16_t color)
+void EPaperDisplay::DrawCircle(uint16_t x, uint16_t y, uint16_t radius, uint8_t color)
 {
     /* Bresenham algorithm */
     uint16_t x_pos = -radius;
@@ -187,7 +180,7 @@ void EPaperDisplay::DrawCircle(uint16_t x, uint16_t y, uint16_t radius, uint16_t
 }
 
 // Draws a filled circle
-void EPaperDisplay::DrawFilledCircle(uint16_t x, uint16_t y, uint16_t radius, uint16_t color)
+void EPaperDisplay::DrawFilledCircle(uint16_t x, uint16_t y, uint16_t radius, uint8_t color)
 {
     /* Bresenham algorithm */
     uint16_t x_pos = -radius;
