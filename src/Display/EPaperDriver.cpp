@@ -270,7 +270,7 @@ void EPaperDriver::SetFrameMemoryPartial(const unsigned char *imgBuf,
     delay(2);
 
     SetLut(PARTIAL_REFRESH_WAVEFORM);
-    SendCommand(0x37); 
+    SendCommand(0x37);
     // No Idea why, but I can't put this data in an array and send it over 🤔
     // If you put it in an array and send it, the screen doesn't get cleared properly
     SendData(0x00); SendData(0x00); SendData(0x00); SendData(0x00); SendData(0x00); 
@@ -288,21 +288,8 @@ void EPaperDriver::SetFrameMemoryPartial(const unsigned char *imgBuf,
     SetMemoryPointer(x, y);
     SendCommand(0x24);
 
-    // for (int i = 0; i < imgHeight; i++)
-    // {
-    //     SendData((void*)(imgBuf + x + y * Width / 8), imgWidth / 8);
-    // }
-    Serial.println((x + y * Width) / 8);
-    for (int i = 0; i < imgWidth; i++)
-    {
-        for (int j = 0; j < imgHeight; j++)
-        {
-            SendData(imgBuf[(i + j * Width) / 8]);
-        }
-    }
-    
-
-    // SendData((void*)imgBuf, imgWidth * imgHeight / 8);
+    for (int j = 0; j < imgHeight; j++)
+        SendData((void*)(imgBuf + x + (j + y) * Width / 8), imgWidth / 8);
 }
 
 // The display has got two internal memory buffers

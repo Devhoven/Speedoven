@@ -15,7 +15,7 @@
 #define CLK_PIN  33
 #define DIN_PIN  32
 
-EPaperDisplay Display(EPD_WIDTH, EPD_HEIGHT, ROTATE_0, 
+EPaperDisplay Display(EPD_WIDTH, EPD_HEIGHT,
                       {BUSY_PIN, RST_PIN, DC_PIN, CS_PIN, CLK_PIN, DIN_PIN});
 
 // Used for the timer
@@ -42,9 +42,9 @@ void loop()
     timeStr[4] = CurrentMS % 60 % 10 + '0';
 
     Display.Clear(WHITE);
-    Display.DrawString(0, 0, "Ilja", &Font24, BLACK);
+    Display.DrawString(0, 0, "Sussy", &Font24, BLACK);
     Display.DrawString(0, 24, timeStr, &Font24, BLACK);
-    Display.DrawString(0, 48, "pieft", &Font24, BLACK);
+    Display.DrawString(0, 48, "balls", &Font24, BLACK);
 
     Display.DisplayFramePartial();
-}
+}   

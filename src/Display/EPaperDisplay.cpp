@@ -2,23 +2,30 @@
 #include "EPaperDisplay.h"
 #include "EPaperDriver.h"
 
-EPaperDisplay::EPaperDisplay(unsigned int width, unsigned int height, uint8_t rotation,
-                             EPaperPinConfig pinConfig) 
+EPaperDisplay::EPaperDisplay(unsigned int width, unsigned int height, EPaperPinConfig pinConfig) 
                              : EPaperDriver(width, height, pinConfig),
-                             ImgWidth{0}, ImgHeight{0}, Rotation{rotation}
+                             ImgWidth{0}, ImgHeight{0}
 {
-    // An array which could contain the whole image
+    
     SetSize(Width, Height);
     Image = new unsigned char[ImgWidth * ImgHeight / 8];
 }
 
+// Clears the whole display
 void EPaperDisplay::Clear(int color)
 {
-    memset(Image, color ? 0xFF : 0, ImgWidth * ImgHeight / 8);
+    memset(Image, color ? 0xFF : 0, Width * Height / 8);
 }
 
-// Draws a pixel by absolute coordinates, no matter the rotation
-void EPaperDisplay::DrawAbsolutePixel(int x, int y, int color)
+// Clears a region of memory on the display in the set color
+// x and width have to be a multiple of 8 
+void EPaperDisplay::ClearRegion(int x, int y, unsigned int width, unsigned int height, int color)
+{
+    memset((Image + x / 8 + y), color ? 0xFF : 0, width * height / 8);
+}
+
+// Draws a pixel by absolute coordinates
+void EPaperDisplay::DrawPixel(int x, int y, int color)
 {
     if (color)
         Image[(x + y * Width) / 8] |= 0x80 >> (x % 8);
@@ -33,52 +40,6 @@ void EPaperDisplay::SetSize(unsigned int imgWidth, unsigned int imgHeight){
     ImgHeight = imgHeight;
 }
 
-int EPaperDisplay::GetRotate()
-{
-    return Rotation;
-}
-
-void EPaperDisplay::SetRotate(uint8_t rotation)
-{
-    Rotation = rotation;
-}
-
-// Draws a pixel at the given coordinates, affected by the rotation
-void EPaperDisplay::DrawPixel(int x, int y, int color)
-{
-    if (x < 0 || y < 0)
-        return;
-
-    if (Rotation == ROTATE_0)
-    {
-        if (x >= Width || y >= Height)
-            return;
-
-        DrawAbsolutePixel(x, y, color);
-    }
-    else if (Rotation == ROTATE_90)
-    {
-        if (x >= Height || y >= Width)
-            return;
-
-        DrawAbsolutePixel(Width - y, x, color);
-    }
-    else if (Rotation == ROTATE_180)
-    {
-        if (x >= Width || y >= Height)
-            return;
-
-        DrawAbsolutePixel(Width - x, Height - y, color);
-    }
-    else if (Rotation == ROTATE_270)
-    {
-        if (x >= Height || y >= Width)
-            return;
-
-        DrawAbsolutePixel(y, Height - x, color);
-    }
-}
-
 // Draws a character
 void EPaperDisplay::DrawChar(int x, int y, char asciiChar, sFONT* font, int color)
 {
@@ -91,7 +52,9 @@ void EPaperDisplay::DrawChar(int x, int y, char asciiChar, sFONT* font, int colo
         {
             if (*ptr & (0x80 >> (j % 8)))
                 DrawPixel(x + j, y + i, color);
-            
+            else 
+                DrawPixel(x + j, y + i, WHITE);
+
             if (j % 8 == 7)
                 ptr++;
         }
@@ -138,35 +101,45 @@ void EPaperDisplay::DrawLine(int x0, int y0, int x1, int y1, int color)
             y0 += sy;
         }
     }
+
+    int minX = min(x0, x1);
+    int maxX = max(x0, x1);
+    int minY = min(y0, y1);
+    int maxY = max(y0, y1);
+    SetFrameMemoryPartial(Image, minX, minY, maxX - minX, maxY - minY);
 }
 
 // Draws a horizontal line
-void EPaperDisplay::DrawHorizontalLine(int x, int y, int line_width, int color)
+void EPaperDisplay::DrawHorizontalLine(int x, int y, int lineWidth, int color)
 {
-    for (int i = x; i < x + line_width; i++)
+    for (int i = x; i < x + lineWidth; i++)
         DrawPixel(i, y, color);
+
+    SetFrameMemoryPartial(Image, x, y, lineWidth, 1);
 }
 
 // Draws a vertical line
-void EPaperDisplay::DrawVerticalLine(int x, int y, int line_height, int color)
+void EPaperDisplay::DrawVerticalLine(int x, int y, int lineHeight, int color)
 {
-    for (int i = y; i < y + line_height; i++)
+    for (int i = y; i < y + lineHeight; i++)
         DrawPixel(x, i, color);
+    
+    SetFrameMemoryPartial(Image, x, y, 8, lineHeight);
 }
 
 // Draws a rectangle
 void EPaperDisplay::DrawRectangle(int x0, int y0, int x1, int y1, int color)
 {
-    int min_x, min_y, max_x, max_y;
-    min_x = x1 > x0 ? x0 : x1;
-    max_x = x1 > x0 ? x1 : x0;
-    min_y = y1 > y0 ? y0 : y1;
-    max_y = y1 > y0 ? y1 : y0;
+    int minX, minY, maxX, maxY;
+    minX = min(x0, x1);
+    maxX = max(x0, x1);
+    minY = min(y0, y1);
+    maxY = max(y0, y1);
 
-    DrawHorizontalLine(min_x, min_y, max_x - min_x + 1, color);
-    DrawHorizontalLine(min_x, max_y, max_x - min_x + 1, color);
-    DrawVerticalLine  (min_x, min_y, max_y - min_y + 1, color);
-    DrawVerticalLine  (max_x, min_y, max_y - min_y + 1, color);
+    DrawHorizontalLine(minX, minY, maxX - minX + 1, color);
+    DrawHorizontalLine(minX, maxY, maxX - minX + 1, color);
+    DrawVerticalLine  (minX, minY, maxY - minY + 1, color);
+    DrawVerticalLine  (maxX, minY, maxY - minY + 1, color);
 }
 
 // Draws a filled rectangle
