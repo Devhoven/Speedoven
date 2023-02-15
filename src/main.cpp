@@ -42,9 +42,12 @@ void loop()
     timeStr[4] = CurrentMS % 60 % 10 + '0';
 
     Display.Clear(WHITE);
-    Display.DrawString(0, 0, "Sussy", &Font24, BLACK);
-    Display.DrawString(0, 24, timeStr, &Font24, BLACK);
-    Display.DrawString(0, 48, "balls", &Font24, BLACK);
-
+    Display.DrawString(0, 0,  "Fortnite", &Font20, BLACK);
+    Display.DrawString(0, 24, "Sussy", &Font24, BLACK);
+    Display.DrawString(0, 48, timeStr, &Font24, BLACK);
+    // Display.DrawString(0, 72, "Baller", &Font24, BLACK);
+    // Display.DrawString(0, 72, "balls", &Font24, BLACK);
+    Display.DrawString(0, 72, "Hund", &Font24, BLACK);
+    Display.DrawString(0, 84, "Hund", &Font24, BLACK);
     Display.DisplayFramePartial();
 }   

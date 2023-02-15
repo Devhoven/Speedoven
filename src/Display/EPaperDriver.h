@@ -24,11 +24,11 @@ private:
 
     void InitSpi();
     void SpiTransfer(unsigned char data);
-    void SpiTransfer(void* data, uint32_t length);
+    void SpiTransfer(unsigned char* data, uint32_t length);
 
     void SendCommand(unsigned char command);
     void SendData(unsigned char data);
-    void SendData(void* data, uint32_t length);
+    void SendData(unsigned char* data, uint32_t length);
 
     void SetLut(unsigned char *lut);
     void SetLutByHost(unsigned char *lut);

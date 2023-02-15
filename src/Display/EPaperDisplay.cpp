@@ -117,7 +117,7 @@ void EPaperDisplay::DrawVerticalLine(uint16_t x, uint16_t y, uint16_t lineHeight
     for (uint16_t i = y; i < y + lineHeight; i++)
         DrawPixel(x, i, color);
     
-    SetFrameMemoryPartial(Image, x, y, 8, lineHeight);
+    SetFrameMemoryPartial(Image, x, y, 1, lineHeight);
 }
 
 // Draws a rectangle

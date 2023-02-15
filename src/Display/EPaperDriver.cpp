@@ -55,7 +55,7 @@ void EPaperDriver::SpiTransfer(unsigned char data)
 }
 
 // Sends an array of data via SPI
-void EPaperDriver::SpiTransfer(void* data, uint32_t length)
+void EPaperDriver::SpiTransfer(unsigned char* data, uint32_t length)
 {
     digitalWrite(PinConfig.CSPin, LOW);
     SPI.transfer(data, length);
@@ -77,7 +77,7 @@ void EPaperDriver::SendData(unsigned char data)
 }
 
 // Sends an array of data to the display
-void EPaperDriver::SendData(void* data, uint32_t length)
+void EPaperDriver::SendData(unsigned char* data, uint32_t length)
 {
     digitalWrite(PinConfig.DCPin, HIGH);
     SpiTransfer(data, length);
@@ -239,15 +239,20 @@ void EPaperDriver::SetFrameMemory(const unsigned char *imgBuf,
     if (y + imgHeight > Height)
         imgHeight = Height - y;
 
-    // x point must be the multiple of 8 or the last 3 bits will be ignored 
-    x &= 0xF8;
-    imgWidth &= 0xF8;
+    // x and imgWidth have to be a multiple of 8
+    if (x & 8 != 0)
+    {
+        imgWidth = imgWidth + (x % 8);
+        imgWidth = imgWidth + (8 - (imgWidth % 8));
+    }
+    x = x - (x % 8);
 
     SetMemoryArea(x, y, x + imgWidth - 1, y + imgHeight - 1);
     SetMemoryPointer(x, y);
     SendCommand(0x24);
 
-    SendData((void*)imgBuf, imgWidth * imgHeight / 8);
+    for (uint16_t j = 0; j < imgHeight; j++)
+        SendData((unsigned char*)(imgBuf + x + (j + y) * Width / 8), imgWidth / 8); 
 }
 
 // Writes an image into the frame memory at a specified position, for partial refresh
@@ -260,10 +265,14 @@ void EPaperDriver::SetFrameMemoryPartial(const unsigned char *imgBuf,
     if (y + imgHeight > Height)
         imgHeight = Height - y;
 
-    /* x point must be the multiple of 8 or the last 3 bits will be ignored */
-    x &= 0xF8;
-    imgWidth &= 0xF8;
-
+    // x and imgWidth have to be a multiple of 8
+    if (x & 8 != 0)
+    {
+        imgWidth = imgWidth + (x % 8);
+        imgWidth = imgWidth + (8 - (imgWidth % 8));
+    }
+    x = x - (x % 8);
+    
     digitalWrite(PinConfig.RstPin, LOW);
     delay(2);
     digitalWrite(PinConfig.RstPin, HIGH);
@@ -289,7 +298,7 @@ void EPaperDriver::SetFrameMemoryPartial(const unsigned char *imgBuf,
     SendCommand(0x24);
 
     for (uint16_t j = 0; j < imgHeight; j++)
-        SendData((void*)(imgBuf + x + (j + y) * Width / 8), imgWidth / 8);
+        SendData((unsigned char*)(imgBuf + x + (j + y) * Width / 8), imgWidth / 8); 
 }
 
 // The display has got two internal memory buffers
