@@ -291,7 +291,7 @@ void EPaperDriver::SetFrameMemoryPartial(const unsigned char *imgBuf,
     SendCommand(0x22);
     SendData(0xC0);
     SendCommand(0x20);
-    WaitUntilIdle();                    
+    WaitUntilIdle();
     
     SetMemoryArea(x, y, x + imgWidth - 1, y + imgHeight - 1);
     SetMemoryPointer(x, y);

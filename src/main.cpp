@@ -45,13 +45,12 @@ void loop()
     Display.DrawString(0, 0,  "Fortnite", &Font20, BLACK);
     Display.DrawString(0, 24, "Sussy", &Font24, BLACK);
     Display.DrawString(0, 48, timeStr, &Font24, BLACK);
-    // Display.DrawString(0, 72, "Baller", &Font24, BLACK);
-    // Display.DrawString(0, 72, "balls", &Font24, BLACK);
     Display.DrawString(0, 72, timeStr, &Font24, BLACK);
-    Display.Clear(WHITE);
     Display.DrawString(0, 84, timeStr, &Font24, BLACK);
     
-    Display.DrawString(0, 108, timeStr, &Font24, BLACK);
-    Display.DrawString(0, 120, timeStr, &Font24, BLACK);
+    Display.DrawString(0, 108, timeStr, &Font24, WHITE);
+    Display.DrawString(0, 120, timeStr, &Font24, WHITE);
+
     Display.DisplayFramePartial();
+    delay(3000);
 }

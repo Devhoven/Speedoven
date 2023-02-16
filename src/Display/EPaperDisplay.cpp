@@ -46,7 +46,7 @@ void EPaperDisplay::DrawChar(uint16_t x, uint16_t y, char asciiChar, sFONT* font
             if (*ptr & (0x80 >> (j % 8)))
                 DrawPixel(x + j, y + i, color);
             else 
-                DrawPixel(x + j, y + i, WHITE);
+                DrawPixel(x + j, y + i, color == WHITE ? BLACK : WHITE);
 
             if (j % 8 == 7)
                 ptr++;
@@ -66,6 +66,27 @@ void EPaperDisplay::DrawString(uint16_t x, uint16_t y, const char* text, sFONT* 
     // Send the string character by character 
     for (uint16_t i = 0; i < textLength; i++)
         DrawChar(i * font->Width + x, y, *(text + i), font, color);
+
+    Serial.println("-------REAL SHIT---------");
+    for (uint16_t j = 0; j < 36; j++)
+    {
+        Serial.print(j, HEX);
+        if (j < 16)
+            Serial.print(' ');
+        Serial.print(' ');
+
+        for (uint16_t i = 0; i < Width / 8; i++)
+        {
+            unsigned char val = *(Image + i + (j) * Width / 8);
+            Serial.print(val, HEX);
+            if (val < 16)
+                Serial.print(' ');
+            Serial.print(' ');
+        }
+        Serial.println();
+    }
+
+    delay(3000);
 
     SetFrameMemoryPartial(Image, x, y, ImgWidth, ImgHeight);
 }
