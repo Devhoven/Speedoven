@@ -244,8 +244,8 @@ void EPaperDriver::SetFrameMemory(const unsigned char *imgBuf,
     {
         imgWidth = imgWidth + (x % 8);
         imgWidth = imgWidth + (8 - (imgWidth % 8));
+        x = x - (x % 8);
     }
-    x = x - (x % 8);
 
     SetMemoryArea(x, y, x + imgWidth - 1, y + imgHeight - 1);
     SetMemoryPointer(x, y);
@@ -260,18 +260,18 @@ void EPaperDriver::SetFrameMemoryPartial(const unsigned char *imgBuf,
                                            uint16_t x, uint16_t y, 
                                            uint16_t imgWidth, uint16_t imgHeight)
 {
-   if (x + imgWidth > Width)
+//    if (x + imgWidth > Width)
         imgWidth = Width - x;
     if (y + imgHeight > Height)
         imgHeight = Height - y;
 
     // x and imgWidth have to be a multiple of 8
-    if (x & 8 != 0)
-    {
-        imgWidth = imgWidth + (x % 8);
-        imgWidth = imgWidth + (8 - (imgWidth % 8));
-    }
-    x = x - (x % 8);
+    // if (x & 8 != 0)
+    // {
+    //     imgWidth = imgWidth + (x % 8);
+    //     imgWidth = imgWidth + (8 - (imgWidth % 8));
+        x = x - (x % 8);
+    // }
     
     digitalWrite(PinConfig.RstPin, LOW);
     delay(2);
@@ -285,7 +285,7 @@ void EPaperDriver::SetFrameMemoryPartial(const unsigned char *imgBuf,
     SendData(0x00); SendData(0x00); SendData(0x00); SendData(0x00); SendData(0x00); 
     SendData(0x40); SendData(0x00); SendData(0x00); SendData(0x00); SendData(0x00);
 
-    SendCommand(0x3C); // BorderWavefrom
+    SendCommand(0x3C); // BorderWavefroms
     SendData(0x80);
 
     SendCommand(0x22);
