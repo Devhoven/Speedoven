@@ -66,29 +66,6 @@ void EPaperDisplay::DrawString(uint16_t x, uint16_t y, const char* text, sFONT* 
     // Send the string character by character 
     for (uint16_t i = 0; i < textLength; i++)
         DrawChar(i * font->Width + x, y, *(text + i), font, color);
-
-    Serial.println("-------REAL SHIT---------");
-    for (uint16_t j = 0; j < 36; j++)
-    {
-        Serial.print(j, HEX);
-        if (j < 16)
-            Serial.print(' ');
-        Serial.print(' ');
-
-        for (uint16_t i = 0; i < Width / 8; i++)
-        {
-            unsigned char val = *(Image + i + (j) * Width / 8);
-            Serial.print(val, HEX);
-            if (val < 16)
-                Serial.print(' ');
-            Serial.print(' ');
-        }
-        Serial.println();
-    }
-
-    delay(3000);
-
-    SetFrameMemoryPartial(Image, x, y, ImgWidth, ImgHeight);
 }
 
 // Draws a line 
@@ -120,7 +97,6 @@ void EPaperDisplay::DrawLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1,
     uint16_t maxX = max(x0, x1);
     uint16_t minY = min(y0, y1);
     uint16_t maxY = max(y0, y1);
-    SetFrameMemoryPartial(Image, minX, minY, maxX - minX, maxY - minY);
 }
 
 // Draws a horizontal line
@@ -128,8 +104,6 @@ void EPaperDisplay::DrawHorizontalLine(uint16_t x, uint16_t y, uint16_t lineWidt
 {
     for (uint16_t i = x; i < x + lineWidth; i++)
         DrawPixel(i, y, color);
-
-    SetFrameMemoryPartial(Image, x, y, lineWidth, 1);
 }
 
 // Draws a vertical line
@@ -137,8 +111,6 @@ void EPaperDisplay::DrawVerticalLine(uint16_t x, uint16_t y, uint16_t lineHeight
 {
     for (uint16_t i = y; i < y + lineHeight; i++)
         DrawPixel(x, i, color);
-    
-    SetFrameMemoryPartial(Image, x, y, 1, lineHeight);
 }
 
 // Draws a rectangle
@@ -228,4 +200,10 @@ void EPaperDisplay::DrawFilledCircle(uint16_t x, uint16_t y, uint16_t radius, ui
             err += ++x_pos * 2 + 1;
 
     } while (x_pos <= 0);
+}
+
+void EPaperDisplay::Show()
+{
+    SetFrameMemoryPartial(Image, 0, 0, Width, Height);
+    DisplayFramePartial();
 }

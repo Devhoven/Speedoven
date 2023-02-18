@@ -41,8 +41,7 @@ void EPaperDriver::InitSpi()
     pinMode(PinConfig.RstPin, OUTPUT);
     pinMode(PinConfig.DCPin, OUTPUT);
     pinMode(PinConfig.BusyPin, INPUT);
-    // -1 = no MISO - PIN
-    SPI.begin(PinConfig.ClkPin, -1, PinConfig.DinPin);
+    SPI.begin(PinConfig.ClkPin, 2, PinConfig.DinPin);
     SPI.beginTransaction(SPISettings(SPI_CLOCK_SPEED, MSBFIRST, SPI_MODE0));
 }
 
@@ -260,18 +259,18 @@ void EPaperDriver::SetFrameMemoryPartial(const unsigned char *imgBuf,
                                            uint16_t x, uint16_t y, 
                                            uint16_t imgWidth, uint16_t imgHeight)
 {
-//    if (x + imgWidth > Width)
+    if (x + imgWidth > Width)
         imgWidth = Width - x;
     if (y + imgHeight > Height)
         imgHeight = Height - y;
 
     // x and imgWidth have to be a multiple of 8
-    // if (x & 8 != 0)
-    // {
-    //     imgWidth = imgWidth + (x % 8);
-    //     imgWidth = imgWidth + (8 - (imgWidth % 8));
+    if (x & 8 != 0)
+    {
+        imgWidth = imgWidth + (x % 8);
+        imgWidth = imgWidth + (8 - (imgWidth % 8));
         x = x - (x % 8);
-    // }
+    }
     
     digitalWrite(PinConfig.RstPin, LOW);
     delay(2);

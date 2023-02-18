@@ -26,6 +26,7 @@ public:
     EPaperDisplay(uint16_t width, uint16_t height, EPaperPinConfig pinConfig);
 
     void Clear(uint8_t color);
+
     void DrawString(uint16_t x, uint16_t y, const char* text, sFONT* font, uint8_t color);
     void DrawLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t color);
     void DrawHorizontalLine(uint16_t x, uint16_t y, uint16_t lineWidth, uint8_t color);
@@ -34,4 +35,6 @@ public:
     void DrawFilledRectangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t color);
     void DrawCircle(uint16_t x, uint16_t y, uint16_t radius, uint8_t color);
     void DrawFilledCircle(uint16_t x, uint16_t y, uint16_t radius, uint8_t color);
+
+    void Show();
 };
