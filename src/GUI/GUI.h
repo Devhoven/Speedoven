@@ -8,6 +8,7 @@
 namespace GUI
 {
     EPaperDisplay* Display;
+
     #define GUI_ELEMENT_COUNT 1
     GUIElement* GUIElements[] = { nullptr };
 
@@ -32,7 +33,7 @@ namespace GUI
         for (uint8_t i = 0; i < GUI_ELEMENT_COUNT; i++)
             GUIElements[i]->Draw();
 
-        Display->DrawString(0, 260, String(millis()).c_str(), &Font16, BLACK);
+        Display->DrawString(0, 260, String(millis()).c_str(), &Font16);
 
         Display->Show();
     }

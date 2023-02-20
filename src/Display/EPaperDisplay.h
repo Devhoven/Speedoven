@@ -27,14 +27,14 @@ public:
 
     void Clear(uint8_t color);
 
-    void DrawString(uint16_t x, uint16_t y, const char* text, FONT* font, uint8_t color);
-    void DrawLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t color);
-    void DrawHorizontalLine(uint16_t x, uint16_t y, uint16_t lineWidth, uint8_t color);
-    void DrawVerticalLine(uint16_t x, uint16_t y, uint16_t lineHeight, uint8_t color);
-    void DrawRectangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t color);
-    void DrawFilledRectangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t color);
-    void DrawCircle(uint16_t x, uint16_t y, uint16_t radius, uint8_t color);
-    void DrawFilledCircle(uint16_t x, uint16_t y, uint16_t radius, uint8_t color);
+    void DrawString(uint16_t x, uint16_t y, const char* text, FONT* font, uint8_t color = BLACK);
+    void DrawLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t color = BLACK);
+    void DrawHorizontalLine(uint16_t x, uint16_t y, uint16_t lineWidth, uint8_t color = BLACK);
+    void DrawVerticalLine(uint16_t x, uint16_t y, uint16_t lineHeight, uint8_t color = BLACK);
+    void DrawRectangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t color = BLACK);
+    void DrawFilledRectangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t color = BLACK);
+    void DrawCircle(uint16_t x, uint16_t y, uint16_t radius, uint8_t color = BLACK);
+    void DrawFilledCircle(uint16_t x, uint16_t y, uint16_t radius, uint8_t color = BLACK);
 
     void Show();
 };
