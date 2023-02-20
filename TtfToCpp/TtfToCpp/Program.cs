@@ -82,7 +82,11 @@ void GenerateFontHeader(string fontFilePath, int fontWidth, AsciiRange asciiRang
 
     // Generating text for a header file in which the font is encoded in a uint8_t c-array 
     StringBuilder fontHeaderBuilder = new StringBuilder();
-    fontHeaderBuilder.Append($"const uint8_t Font{fontWidth}Table[] = \n{{\n");
+    fontHeaderBuilder.Append($"#include \"Fonts.h\" \n" +
+                             $"\n" +
+                             $"const uint8_t Font{fontWidth}Table[] = \n" +
+                             $"{{\n" +
+                             $"\t");
 
     for (int i = 0; i < bmpArr.Length; i++)
     {
@@ -99,6 +103,7 @@ void GenerateFontHeader(string fontFilePath, int fontWidth, AsciiRange asciiRang
 
         if (i == 0)
             continue;
+
         // This query is true after each image row of an character
         if ((i + 1) % newFontWidth == 0)
         {
@@ -112,11 +117,11 @@ void GenerateFontHeader(string fontFilePath, int fontWidth, AsciiRange asciiRang
                 else
                     fontHeaderBuilder.Append(' ');
             }
-            fontHeaderBuilder.Append('\n');
+            fontHeaderBuilder.Append("\n\t");
         }
         // Is true after each character and appends a linebreak after each one 
         if ((i + 1) % (bmpFont.Height * newFontWidth) == 0)
-            fontHeaderBuilder.Append('\n');
+            fontHeaderBuilder.Append("\n\t");
     }
     // Removing the last linebreak
     fontHeaderBuilder.Remove(fontHeaderBuilder.Length - 2, 1);
@@ -135,8 +140,9 @@ void GenerateFontHeader(string fontFilePath, int fontWidth, AsciiRange asciiRang
 }
 
 GenerateFontHeader(@"C:\Users\veste\source\repos\TtfToCpp\TtfToCpp\NotoSansMonoRegular.ttf",
-                   24,
-                   new AsciiRange(32, 122),
+                   16,
+                   new AsciiRange(' ', 'z'),
+                   // new AsciiRange('0', '9'),
                    "NotoSans");
 
 struct AsciiRange

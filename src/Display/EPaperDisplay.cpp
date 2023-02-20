@@ -34,30 +34,28 @@ void EPaperDisplay::SetSize(uint16_t imgWidth, uint16_t imgHeight){
 }
 
 // Draws a character
-void EPaperDisplay::DrawChar(uint16_t x, uint16_t y, char asciiChar, sFONT* font, uint8_t color)
+void EPaperDisplay::DrawChar(uint16_t x, uint16_t y, char asciiChar, FONT* font, uint8_t color)
 {
-    uint16_t char_offset = (asciiChar - ' ') * font->Height * (font->Width / 8 + (font->Width % 8 ? 1 : 0));
-    const unsigned char *ptr = &font->table[char_offset];   
+    const uint8_t* charPtr = &font->FontTable[(asciiChar - font->AsciiStart) * font->Width * font->Height / 8];
 
-    for (uint16_t i = 0; i < font->Height; i++)
+    for (uint8_t yOff = 0; yOff < font->Height; yOff++)
     {
-        for (uint16_t j = 0; j < font->Width; j++)
+        for (uint8_t xOff = 0; xOff < font->Width / 8; xOff++)
         {
-            if (*ptr & (0x80 >> (j % 8)))
-                DrawPixel(x + j, y + i, color);
-            else 
-                DrawPixel(x + j, y + i, color == WHITE ? BLACK : WHITE);
-
-            if (j % 8 == 7)
-                ptr++;
+            for (uint8_t i = 0; i < 8; i++)
+            {
+                if (!(*charPtr & (1 << i)))
+                    DrawPixel(x + xOff * 8 + i, y + yOff, color); 
+                // else
+                //     DrawPixel(x + xOff * 8 + i, y + yOff, color == WHITE ? BLACK : WHITE);
+            }
+            charPtr++;
         }
-        if (font->Width % 8 != 0)
-            ptr++;
     }
 }
 
 // Draws a string
-void EPaperDisplay::DrawString(uint16_t x, uint16_t y, const char* text, sFONT* font, uint8_t color)
+void EPaperDisplay::DrawString(uint16_t x, uint16_t y, const char* text, FONT* font, uint8_t color)
 {
     size_t textLength = strlen(text);
 
