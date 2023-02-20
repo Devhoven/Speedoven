@@ -1,4 +1,5 @@
 #pragma once
+
 #include <stdlib.h>
 
 #define SPI_CLOCK_SPEED 2000000

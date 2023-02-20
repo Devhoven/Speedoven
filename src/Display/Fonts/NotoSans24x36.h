@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Fonts.h" 
 
 const uint8_t Font24Table[] = 
@@ -3368,12 +3370,6 @@ const uint8_t Font24Table[] =
 	0xFF, 0xFF, 0xFF,  // ########################
 	0xFF, 0xFF, 0xFF,  // ########################
 	0xFF, 0xFF, 0xFF,  // ########################
-		};
-
-FONT Font24 = 
-{
-	Font24Table, 
-	24, // Width 
-	36, // Height
-	32, // AsciiRange-Start 
 };
+
+extern FONT Font24;

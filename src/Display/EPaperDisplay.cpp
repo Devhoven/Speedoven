@@ -46,8 +46,6 @@ void EPaperDisplay::DrawChar(uint16_t x, uint16_t y, char asciiChar, FONT* font,
             {
                 if (!(*charPtr & (1 << i)))
                     DrawPixel(x + xOff * 8 + i, y + yOff, color); 
-                // else
-                //     DrawPixel(x + xOff * 8 + i, y + yOff, color == WHITE ? BLACK : WHITE);
             }
             charPtr++;
         }

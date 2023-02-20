@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Fonts.h" 
 
 const uint8_t Font64Table[] = 
@@ -971,12 +973,6 @@ const uint8_t Font64Table[] =
 	0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,  // ################################################################
 	0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,  // ################################################################
 	0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,  // ################################################################
-		};
-
-FONT Font64 = 
-{
-	Font64Table, 
-	64, // Width 
-	96, // Height
-	48, // AsciiRange-Start 
 };
+
+extern FONT Font64;

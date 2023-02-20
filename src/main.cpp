@@ -17,18 +17,16 @@
 EPaperDisplay Display(EPD_WIDTH, EPD_HEIGHT,
                       {BUSY_PIN, RST_PIN, DC_PIN, CS_PIN, CLK_PIN, DIN_PIN});
 
-GUI* UI = nullptr;
-
 void setup()
 {
     Serial.begin(115200);
     Serial.println("Started");
 
-    UI = new GUI{Display};
+    GUI::Init(&Display);
 }
 
 void loop()
 {
-    UI->Update();
-    UI->Draw();
+    GUI::Update();
+    GUI::Draw();
 }

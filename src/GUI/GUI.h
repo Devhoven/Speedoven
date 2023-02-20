@@ -1,14 +1,39 @@
-#include "../Display/EPaperDisplay.h"
+#pragma once
 
-class GUI
+#include "GUIElements/GUIElement.h"
+#include "GUIElements/SpeedTracker.h"
+#include "../Display/EpaperDisplay.h"
+#include "../Display/Fonts/NotoSans16x24.h"
+
+namespace GUI
 {
-private:
-    EPaperDisplay Display;
+    EPaperDisplay* Display;
+    #define GUI_ELEMENT_COUNT 1
+    GUIElement* GUIElements[] = { nullptr };
 
-public: 
-    GUI(EPaperDisplay display);
+    void Init(EPaperDisplay* display) 
+    { 
+        Display = display;
+        Display->Init();
 
-    void Update();
+        GUIElements[0] = new SpeedTracker(display);
+    }
 
-    void Draw();
-};
+    void Update()
+    {
+        for (uint8_t i = 0; i < GUI_ELEMENT_COUNT; i++)
+            GUIElements[i]->Update();
+    }
+
+    void Draw()
+    {
+        Display->Clear(WHITE);
+
+        for (uint8_t i = 0; i < GUI_ELEMENT_COUNT; i++)
+            GUIElements[i]->Draw();
+
+        Display->DrawString(0, 260, String(millis()).c_str(), &Font16, BLACK);
+
+        Display->Show();
+    }
+}
