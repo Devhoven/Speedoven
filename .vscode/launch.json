@@ -12,9 +12,9 @@
             "type": "platformio-debug",
             "request": "launch",
             "name": "PIO Debug",
-            "executable": "c:/Users/veste/Documents/GitHub/Speedoven/.pio/build/SeedXiaoESP/firmware.elf",
+            "executable": "c:/Users/Vincent/Documents/GitHub/Speedoven/.pio/build/SeedXiaoESP/firmware.elf",
             "projectEnvName": "SeedXiaoESP",
-            "toolchainBinDir": "C:/Users/veste/.platformio/packages/toolchain-riscv32-esp/bin",
+            "toolchainBinDir": "C:/Users/Vincent/.platformio/packages/toolchain-riscv32-esp/bin",
             "internalConsoleOptions": "openOnSessionStart",
             "preLaunchTask": {
                 "type": "PlatformIO",
@@ -25,18 +25,18 @@
             "type": "platformio-debug",
             "request": "launch",
             "name": "PIO Debug (skip Pre-Debug)",
-            "executable": "c:/Users/veste/Documents/GitHub/Speedoven/.pio/build/SeedXiaoESP/firmware.elf",
+            "executable": "c:/Users/Vincent/Documents/GitHub/Speedoven/.pio/build/SeedXiaoESP/firmware.elf",
             "projectEnvName": "SeedXiaoESP",
-            "toolchainBinDir": "C:/Users/veste/.platformio/packages/toolchain-riscv32-esp/bin",
+            "toolchainBinDir": "C:/Users/Vincent/.platformio/packages/toolchain-riscv32-esp/bin",
             "internalConsoleOptions": "openOnSessionStart"
         },
         {
             "type": "platformio-debug",
             "request": "launch",
             "name": "PIO Debug (without uploading)",
-            "executable": "c:/Users/veste/Documents/GitHub/Speedoven/.pio/build/SeedXiaoESP/firmware.elf",
+            "executable": "c:/Users/Vincent/Documents/GitHub/Speedoven/.pio/build/SeedXiaoESP/firmware.elf",
             "projectEnvName": "SeedXiaoESP",
-            "toolchainBinDir": "C:/Users/veste/.platformio/packages/toolchain-riscv32-esp/bin",
+            "toolchainBinDir": "C:/Users/Vincent/.platformio/packages/toolchain-riscv32-esp/bin",
             "internalConsoleOptions": "openOnSessionStart",
             "loadMode": "manual"
         }

@@ -20,10 +20,14 @@ namespace GUI
         GUIElements[0] = new SpeedTracker(display);
     }
 
-    void Update()
+    // This method is run in a task, thus the void* - parameter and while(true) - loop
+    void Update(void* parameter)
     {
-        for (uint8_t i = 0; i < GUI_ELEMENT_COUNT; i++)
-            GUIElements[i]->Update();
+        while (true)
+        {
+            for (uint8_t i = 0; i < GUI_ELEMENT_COUNT; i++)
+                GUIElements[i]->Update();
+        }
     }
 
     void Draw()
@@ -32,8 +36,6 @@ namespace GUI
 
         for (uint8_t i = 0; i < GUI_ELEMENT_COUNT; i++)
             GUIElements[i]->Draw();
-
-        Display->DrawString(0, 260, String(millis()).c_str(), &Font16);
 
         Display->Show();
     }

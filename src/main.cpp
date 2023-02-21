@@ -17,16 +17,20 @@
 EPaperDisplay Display(EPD_WIDTH, EPD_HEIGHT,
                       {BUSY_PIN, RST_PIN, DC_PIN, CS_PIN, CLK_PIN, DIN_PIN});
 
+TaskHandle_t UpdateTask;
+
 void setup()
 {
     Serial.begin(115200);
     Serial.println("Started");
 
     GUI::Init(&Display);
+
+    xTaskCreate(GUI::Update, "UpdateTask", 10000, NULL, 1, &UpdateTask);
+    delay(500);
 }
 
 void loop()
 {
-    GUI::Update();
     GUI::Draw();
 }

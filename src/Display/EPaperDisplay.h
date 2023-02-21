@@ -18,7 +18,6 @@ private:
     void SetSize(uint16_t imgWidth, uint16_t imgHeight);
     
     void DrawPixel(uint16_t x, uint16_t y, uint8_t color);
-    void DrawChar(uint16_t x, uint16_t y, char asciiChar, FONT* font, uint8_t color);
 
 public:
     unsigned char* Image;
@@ -27,6 +26,7 @@ public:
 
     void Clear(uint8_t color);
 
+    void DrawChar(uint16_t x, uint16_t y, char asciiChar, FONT* font, uint8_t color = BLACK);
     void DrawString(uint16_t x, uint16_t y, const char* text, FONT* font, uint8_t color = BLACK);
     void DrawLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t color = BLACK);
     void DrawHorizontalLine(uint16_t x, uint16_t y, uint16_t lineWidth, uint8_t color = BLACK);
