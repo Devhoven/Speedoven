@@ -88,6 +88,8 @@ void SpeedTracker::Draw()
     Display->DrawString(0, 100, "Dst:", &Font16); 
     Display->DrawString(64, 100, String(DistanceDriven, DistanceDriven >= 1 ? 0 : 1).c_str(), &Font16);
 
-    // Debug
+    // Drawing a graph with the time on the x-axis and the speed on the y-axis
+
+    // Debug draw
     Display->DrawString(0, 260, String(millis()).c_str(), &Font16);
 }
