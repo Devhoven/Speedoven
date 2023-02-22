@@ -88,11 +88,6 @@ void EPaperDisplay::DrawLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1,
             y0 += sy;
         }
     }
-
-    uint16_t minX = min(x0, x1);
-    uint16_t maxX = max(x0, x1);
-    uint16_t minY = min(y0, y1);
-    uint16_t maxY = max(y0, y1);
 }
 
 // Draws a horizontal line

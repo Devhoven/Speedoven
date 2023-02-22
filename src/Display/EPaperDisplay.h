@@ -25,7 +25,7 @@ public:
 
     void Clear(uint8_t color);
 
-    void DrawPixel(uint16_t x, uint16_t y, uint8_t color);
+    void DrawPixel(uint16_t x, uint16_t y, uint8_t color = BLACK);
     void DrawChar(uint16_t x, uint16_t y, char asciiChar, FONT* font, uint8_t color = BLACK);
     void DrawString(uint16_t x, uint16_t y, const char* text, FONT* font, uint8_t color = BLACK);
     void DrawLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t color = BLACK);

@@ -9,6 +9,8 @@ SpeedTracker::SpeedTracker(EPaperDisplay* display)
     pinMode(SPEED_INPUT_PIN, INPUT_PULLDOWN);
     PreviousTime = micros();
 
+    CurrentSpeedGraph = new Graph(Display, 0, 130, 120, 40);
+
     PreferencesUpdateTime = micros();
     SpeedPreferences.begin("SpeedData", false);
     LoadPreferences();
@@ -89,6 +91,8 @@ void SpeedTracker::Draw()
     Display->DrawString(64, 100, String(DistanceDriven, DistanceDriven >= 1 ? 0 : 1).c_str(), &Font16);
 
     // Drawing a graph with the time on the x-axis and the speed on the y-axis
+    CurrentSpeedGraph->AddNextValue((uint8_t)CurrentSpeed);
+    CurrentSpeedGraph->Draw();
 
     // Debug draw
     Display->DrawString(0, 260, String(millis()).c_str(), &Font16);

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GUIElement.h"
+#include "Graph.h"
 #include <Preferences.h>
 
 // The input which is connected to the speedometer input
@@ -32,6 +33,9 @@ private:
     
     // Saves the current speed in km/h
     float CurrentSpeed;
+
+    // A graph which shows the current speed
+    Graph* CurrentSpeedGraph;
 
     // The entire distance in km the driver has driven with this speedometer enabled
     float DistanceDriven;
