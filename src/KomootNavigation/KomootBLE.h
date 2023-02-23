@@ -6,6 +6,7 @@
 #include <BLEScan.h>
 #include <BLEAdvertisedDevice.h>
 #include <stdlib.h>
+#include <mutex>
 
 namespace KomootBLE
 {
@@ -23,14 +24,6 @@ namespace KomootBLE
 
     void MessageCallback(BLERemoteCharacteristic* remoteCharacteristics, uint8_t* data, size_t length, bool isNotification);
 
-    struct KomootData 
-    {
-        uint32_t Identifier;
-        uint8_t Direction;
-        uint32_t Distance;
-        char* StreetName;
-    };
-
     enum ConnectionState
     {
         SCANNING,
@@ -46,7 +39,10 @@ namespace KomootBLE
 
     ConnectionState CurrentState;
 
-    KomootData* CurrentData;
+    static std::mutex DataMutex;
+    static uint8_t Direction;
+    static uint32_t Distance;
+    static char* StreetName;
 
     void Init()
     {
@@ -108,20 +104,18 @@ namespace KomootBLE
 
     void MessageCallback(BLERemoteCharacteristic* remoteCharacteristics, uint8_t* data, size_t length, bool isNotification)
     {
-        CurrentData = new KomootData();
-        memcpy(&CurrentData->Identifier, data,     4);
-        memcpy(&CurrentData->Direction,  data + 4, 1);
-        memcpy(&CurrentData->Distance,   data + 5, 4);
-        CurrentData->StreetName = (char*)(data + 9);
+        DataMutex.lock();
+        memcpy(&Direction,  data + 4, 1);
+        memcpy(&Distance,   data + 5, 4);
+        StreetName = (char*)(data + 9);
         
-        Serial.print("ID: ");
-        Serial.print(CurrentData->Identifier);
         Serial.print(" Dir: ");
-        Serial.print(CurrentData->Direction);
+        Serial.print(Direction);
         Serial.print(" Distance: ");
-        Serial.print(CurrentData->Distance);
+        Serial.print(Distance);
         Serial.print(" Street name:  ");
-        Serial.println(CurrentData->StreetName);
+        Serial.println(StreetName);
+        DataMutex.unlock();
     }
 
     void KomootAdvertisedDeviceCallbacksHandler::onResult(BLEAdvertisedDevice advertisedDevice) 

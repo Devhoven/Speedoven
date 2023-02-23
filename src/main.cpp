@@ -26,7 +26,7 @@ void setup()
 
     GUI::Init(&Display);
 
-    xTaskCreate(GUI::Update, "UpdateTask", 50000, NULL, 0, &UpdateTask);
+    xTaskCreate(GUI::Update, "UpdateTask", 60000, NULL, 1, &UpdateTask);
     delay(500);
 }
 
