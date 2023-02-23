@@ -11,7 +11,7 @@ namespace GUI
     EPaperDisplay* Display;
 
     #define GUI_ELEMENT_COUNT 2
-    GUIElement* GUIElements[] = { nullptr };
+    GUIElement* GUIElements[] = { nullptr, nullptr };
 
     void Init(EPaperDisplay* display) 
     { 
