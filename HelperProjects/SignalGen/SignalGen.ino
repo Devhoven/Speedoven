@@ -34,7 +34,8 @@ void loop()
     // Changes the speed randomly every second
     if (currentTime - PreviousTimeCount > 1e+6 / 4)
     {
-        Speed += random(-1, 2);
+        Speed += random(-6, 7);
+        Speed = constrain(Speed, 0, 99);
         PreviousTimeCount = currentTime;
     }
 }
