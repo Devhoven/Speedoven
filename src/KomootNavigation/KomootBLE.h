@@ -68,7 +68,6 @@ namespace KomootBLE
     void StartScan()
     {
         Scan->start(5, false);
-        Scan->stop();
     }
 
     bool EstablishConnection()

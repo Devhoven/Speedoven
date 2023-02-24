@@ -2,7 +2,7 @@
 #include "../../Display/Fonts/NotoSans16x24.h"
 
 Graph::Graph(EPaperDisplay* display, uint16_t x, uint16_t y, uint16_t width, uint16_t height) 
-    : Display(display), PosX(x), PosY(y), Width(width), Height(height), Counter(0), MaxValue(0)
+    : Display(display), PosX(x), PosY(y), Width(width), Height(height), Counter(0), MinValue(100), MaxValue(1)
 {
     // - 1, because the first pixel is the graph line itself
     DataLength = Width - FONT_PADDING_LEFT - 1;
@@ -11,7 +11,7 @@ Graph::Graph(EPaperDisplay* display, uint16_t x, uint16_t y, uint16_t width, uin
 
 uint16_t Graph::CalcDataPosY(GraphDataType dataPoint)
 {
-    return PosY + Height - ((dataPoint / (float)(!MaxValue ? 1 : MaxValue)) * (Height - 1) + 1);
+    return PosY + Height - map(dataPoint, MinValue, MaxValue, 0, Height) - 1;
 }
 
 uint16_t Graph::CalcDataPosX(uint16_t index)
@@ -28,11 +28,14 @@ void Graph::AddNextValue(GraphDataType value)
     if (Counter >= DataLength)
     {
         Counter = 0;
-        MaxValue = 0;
+        MaxValue = 1;
+        MinValue = 100;
     }
 
     if (value > MaxValue)
         MaxValue = value;
+    if (value < MinValue)
+        MinValue = value;
 }
 
 void Graph::Draw()
@@ -55,9 +58,16 @@ void Graph::Draw()
     Display->DrawPixel(PosX + Width - 1, PosY + Height - 1);
     Display->DrawPixel(PosX + Width - 2, PosY + Height - 2);
 
-    // Drawing the y-lables
-    Display->DrawString(PosX, PosY - 8, String(MaxValue).c_str(), &Font16);
-    Display->DrawChar(PosX + 16, PosY + Height - 16, '0', &Font16);
+    // Drawing the min and max values
+    if (MaxValue > 10)
+        Display->DrawString(PosX, PosY - 8, String(MaxValue).c_str(), &Font16);
+    else 
+        Display->DrawString(PosX + 16, PosY - 8, String(MaxValue).c_str(), &Font16);
+    
+    if (MinValue > 10)
+        Display->DrawString(PosX, PosY + Height - 16, String(MinValue).c_str(), &Font16);
+    else
+        Display->DrawString(PosX + 16, PosY + Height - 16, String(MinValue).c_str(), &Font16);
 
     // The graph data is only shown if there are more than two data points
     if (Counter < 2)

@@ -7,8 +7,6 @@
 #define GraphDataType uint8_t
 // How much space to the left of the graph is going to be left out for lables
 #define FONT_PADDING_LEFT 32
-// The length of the graph arrows
-#define GRAPH_ARROW_LENGTH
 
 class Graph 
 {
@@ -21,6 +19,7 @@ private:
     // MaxValue is a constantly updated value which contains the highest value in the data-array
     // Used for displaying the data correctly
     GraphDataType MaxValue;
+    GraphDataType MinValue;
 
     // Contains all of the data in the graph
     GraphDataType* Data;
@@ -29,7 +28,6 @@ private:
     // Index of the last added data point in the data array
     uint16_t Counter;
     
-
     // Method used for calculating the y position on the display of a certain data point
     uint16_t CalcDataPosY(GraphDataType dataPoint);
 

@@ -29,6 +29,8 @@ void SpeedTracker::StorePreferences()
 // Calculates the average speed
 uint8_t SpeedTracker::CalcAvgSpeed()
 {
+    if (SpeedSumCount == 0)
+        return 0;
     return (uint8_t)(SpeedSum / SpeedSumCount);
 }
 
@@ -82,6 +84,9 @@ void SpeedTracker::Draw()
     Display->DrawChar(112, 34, 'm', &Font16);
     Display->DrawChar(112, 58, 'h', &Font16);
 
+    // Drawing a line to seperate the big km/h number and the rest of the screen
+    Display->DrawHorizontalLine(3, 80, 122);
+
     // Drawing the average speed
     Display->DrawString(0, 80, "Avg:", &Font16);
     Display->DrawString(64, 80, String(CalcAvgSpeed()).c_str(), &Font16);
@@ -93,4 +98,7 @@ void SpeedTracker::Draw()
     // Drawing a graph with the time on the x-axis and the speed on the y-axis
     CurrentSpeedGraph->AddNextValue((uint8_t)CurrentSpeed);
     CurrentSpeedGraph->Draw();
+
+    // Drawing a line below the graph 
+    Display->DrawHorizontalLine(3, 178, 122);
 }

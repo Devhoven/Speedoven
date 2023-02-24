@@ -134,7 +134,7 @@ StringBuilder builder = new StringBuilder();
 
 for (int i = 0; i < pngNames.Length; i++)
 {
-    Bitmap bmp = ResizeImage(Image.FromFile($"{dirPath}/{pngNames[i]}.png"), 96, 96);
+    Bitmap bmp = ResizeImage(Image.FromFile($"{dirPath}/{pngNames[i]}.png"), 88, 88);
     builder.Append(GeneradeBmpHexCode(bmp, pngNames[i]));
     builder.Append('\n');
 }
