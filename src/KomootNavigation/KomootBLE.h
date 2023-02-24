@@ -42,11 +42,16 @@ namespace KomootBLE
     static std::mutex DataMutex;
     static uint8_t Direction;
     static uint32_t Distance;
-    static char* StreetName;
+    // The ble messages are maximum 22 bytes long and the first 9 bytes is reserved
+    // for the other data (ID, Direction, Distance) 
+    // Thus 13 bytes are left for the street name
+    static char* StreetName = new char[13];
 
     void Init()
     {
         CurrentState = SCANNING;
+
+        StreetName[0] = '\0';
 
         BLEDevice::init(DEVICE_NAME);
         BLEDevice::setMTU(127);
@@ -66,27 +71,51 @@ namespace KomootBLE
         Scan->stop();
     }
 
-    void EstablishConnection()
+    bool EstablishConnection()
     {
         Client = BLEDevice::createClient();
         if (!Client->connect(Device))
-            return;
+        {
+            Serial.println("No connection :(");
+            return false;
+        }
 
         RemoteService = Client->getService(PrimaryServiceUUID);
         if (RemoteService == nullptr)
-            return;
+        {
+            Serial.println("No remote service :(");
+            return false;
+        }
 
         RemoteCharacteristic = RemoteService->getCharacteristic(CharacteristicUUID);
         if (RemoteCharacteristic == nullptr)
-            return;
+        {
+            Serial.println("No remote char :(");
+            return false;
+        }
 
         if (!RemoteCharacteristic->canNotify())
-            return;
+        {
+            Serial.println("No remote notify :(");
+            return false;
+        }
 
         // If everything has gone right, a callback can be set up which gets called when a message from comoot is received
         RemoteCharacteristic->registerForNotify(MessageCallback);
         
+        Serial.println("--KOMOOT-- Connected to Komoot-device");
+        
         CurrentState = CONNECTED;
+        return true;
+    }
+
+    void CheckConnection() 
+    {
+        if (!Client->isConnected())
+        {
+            Serial.println("--KOMOOT-- Lost connection");
+            CurrentState = SCANNING;
+        }
     }
 
     void Update()
@@ -97,7 +126,11 @@ namespace KomootBLE
                 StartScan();
                 break;
             case WAITING_FOR_CONNECTION:
-                EstablishConnection();
+                if (!EstablishConnection())
+                    CurrentState = SCANNING;
+                break;
+            case CONNECTED:
+                CheckConnection();
                 break;
         }
     }
@@ -105,15 +138,15 @@ namespace KomootBLE
     void MessageCallback(BLERemoteCharacteristic* remoteCharacteristics, uint8_t* data, size_t length, bool isNotification)
     {
         DataMutex.lock();
-        memcpy(&Direction,  data + 4, 1);
-        memcpy(&Distance,   data + 5, 4);
-        StreetName = (char*)(data + 9);
+        memcpy(&Direction, data + 4, 1);
+        memcpy(&Distance,  data + 5, 4);
+        strcpy(StreetName, (char*)(data + 9));
         
         Serial.print(" Dir: ");
         Serial.print(Direction);
         Serial.print(" Distance: ");
         Serial.print(Distance);
-        Serial.print(" Street name:  ");
+        Serial.print(" Street name: ");
         Serial.println(StreetName);
         DataMutex.unlock();
     }

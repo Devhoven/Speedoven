@@ -33,23 +33,29 @@ void EPaperDisplay::SetSize(uint16_t imgWidth, uint16_t imgHeight){
     ImgHeight = imgHeight;
 }
 
+// Draws an image
+void EPaperDisplay::DrawImage(uint16_t x, uint16_t y, const uint8_t* imgPtr, uint16_t width, uint16_t height, uint8_t color)
+{
+    for (uint8_t yOff = 0; yOff < height; yOff++)
+    {
+        for (uint8_t xOff = 0; xOff < width / 8; xOff++)
+        {
+            for (uint8_t i = 0; i < 8; i++)
+            {
+                if (!(*imgPtr & (1 << i)))
+                    DrawPixel(x + xOff * 8 + i, y + yOff, color); 
+            }
+            imgPtr++;
+        }
+    }
+}
+
 // Draws a character
 void EPaperDisplay::DrawChar(uint16_t x, uint16_t y, char asciiChar, FONT* font, uint8_t color)
 {
     const uint8_t* charPtr = &font->FontTable[(asciiChar - font->AsciiStart) * font->Width * font->Height / 8];
 
-    for (uint8_t yOff = 0; yOff < font->Height; yOff++)
-    {
-        for (uint8_t xOff = 0; xOff < font->Width / 8; xOff++)
-        {
-            for (uint8_t i = 0; i < 8; i++)
-            {
-                if (!(*charPtr & (1 << i)))
-                    DrawPixel(x + xOff * 8 + i, y + yOff, color); 
-            }
-            charPtr++;
-        }
-    }
+    DrawImage(x, y, charPtr, font->Width, font->Height, color);
 }
 
 // Draws a string

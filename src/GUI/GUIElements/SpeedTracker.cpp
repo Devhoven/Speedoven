@@ -93,7 +93,4 @@ void SpeedTracker::Draw()
     // Drawing a graph with the time on the x-axis and the speed on the y-axis
     CurrentSpeedGraph->AddNextValue((uint8_t)CurrentSpeed);
     CurrentSpeedGraph->Draw();
-
-    // Debug draw
-    Display->DrawString(0, 260, String(millis()).c_str(), &Font16);
 }

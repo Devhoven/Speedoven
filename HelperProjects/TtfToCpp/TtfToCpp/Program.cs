@@ -139,7 +139,7 @@ void GenerateFontHeader(string fontFilePath, int fontWidth, AsciiRange asciiRang
     File.WriteAllLines($"{fontName}{fontWidth}x{fontHeight}.h", new string[] {fontHeaderBuilder.ToString()});
 }
 
-GenerateFontHeader(@"C:\Users\veste\source\repos\TtfToCpp\TtfToCpp\NotoSansMonoRegular.ttf",
+GenerateFontHeader("../../../NotoSansMonoRegular.ttf",
                    16,
                    new AsciiRange(' ', 'z'),
                    // new AsciiRange('0', '9'),

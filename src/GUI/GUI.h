@@ -27,23 +27,17 @@ namespace GUI
     {
         while (true)
         {
-            // for (uint8_t i = 0; i < GUI_ELEMENT_COUNT; i++)
-            //     GUIElements[i]->Update();  
-
-            GUIElements[0]->Update();
-            GUIElements[1]->Update();
+            for (uint8_t i = 0; i < GUI_ELEMENT_COUNT; i++)
+                GUIElements[i]->Update();  
         }
     }
 
     void Draw()
     {
         Display->Clear(WHITE);
-
-        // for (uint8_t i = 0; i < GUI_ELEMENT_COUNT; i++)
-        //     GUIElements[i]->Draw();
-
-        GUIElements[0]->Draw();
-        GUIElements[1]->Draw();
+        
+        for (uint8_t i = 0; i < GUI_ELEMENT_COUNT; i++)
+            GUIElements[i]->Draw();
 
         Display->Show();
     }
